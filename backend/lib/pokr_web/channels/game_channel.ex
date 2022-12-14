@@ -1,14 +1,14 @@
-defmodule PokrWeb.GameChanel do
+defmodule PokrWeb.GameChannel do
   use Phoenix.Channel
 
-  def join("game:" <> _game_id, _params, socket) do
-    send(self(), :after_join)
+  def join("game:" <> _game_id, params, socket) do
+    send(self(), {:after_join, params})
 
     {:ok, socket}
   end
 
-  def handle_info(:after_join, socket) do
-    broadcast!(socket, "player_joined", nil)
+  def handle_info({:after_join, params}, socket) do
+    broadcast!(socket, "player_joined", params)
 
     {:noreply, socket}
   end

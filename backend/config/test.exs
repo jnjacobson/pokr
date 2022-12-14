@@ -17,7 +17,7 @@ config :pokr, Pokr.Repo,
 # you can enable the server option below.
 config :pokr, PokrWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "w82O5sq2PDhsoTIMRj36JOgLSrSPE805jo7j9i/QZTDJP9bqG3QeS08FzNyFWWNh",
+  secret_key_base: "eRdFn4BsApNcqekGYk+KsdIt2+iaSavDg0PUpL8FCEkmBJEEn/h0uHA4La7DlkBh",
   server: false
 
 # In test we don't send emails.

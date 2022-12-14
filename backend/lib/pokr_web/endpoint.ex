@@ -7,7 +7,7 @@ defmodule PokrWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_pokr_key",
-    signing_salt: "GGxQjmC0"
+    signing_salt: "3DIDWrpO"
   ]
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]

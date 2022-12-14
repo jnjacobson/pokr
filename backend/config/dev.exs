@@ -23,7 +23,8 @@ config :pokr, PokrWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "f61kgZAlg0wi1Cv5Ed+AfL4BcEXIvkxcCxLsR8kSTxTHWOOnHNx0WZ4exlkFn0Hu"
+  secret_key_base: "6BWjSKJQJixgBRvcGpDQJlgjUvbKhCHtbTwnKltHo9mGZfDAxr+Wthqe0+91balz",
+  watchers: []
 
 # ## SSL Support
 #

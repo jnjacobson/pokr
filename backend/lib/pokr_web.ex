@@ -60,7 +60,7 @@ defmodule PokrWeb do
 
   defp view_helpers do
     quote do
-      # Import basic rendering functionality (rend1er, render_layout, etc)
+      # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
 
       import PokrWeb.ErrorHelpers
