@@ -23,7 +23,7 @@ config :pokr, PokrWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "Lk/hHd3eBSd6PoK/6IOg42Jw8qyqIyzpZq5hpoC+wsLB+voBt+UdwpqTge0Ekp6h",
+  secret_key_base: "f61kgZAlg0wi1Cv5Ed+AfL4BcEXIvkxcCxLsR8kSTxTHWOOnHNx0WZ4exlkFn0Hu",
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
@@ -52,17 +52,6 @@ config :pokr, PokrWeb.Endpoint,
 # If desired, both `http:` and `https:` keys can be
 # configured to run both http and https servers on
 # different ports.
-
-# Watch static and templates for browser reloading.
-config :pokr, PokrWeb.Endpoint,
-  live_reload: [
-    patterns: [
-      ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
-      ~r"priv/gettext/.*(po)$",
-      ~r"lib/pokr_web/(live|views)/.*(ex)$",
-      ~r"lib/pokr_web/templates/.*(eex)$"
-    ]
-  ]
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"

@@ -3,6 +3,7 @@
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
+  * Ensure postgresql service is running: `sudo service postgresql start`
   * Create and migrate your database with `mix ecto.setup`
   * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 

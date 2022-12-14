@@ -13,9 +13,9 @@ config :pokr,
 # Configures the endpoint
 config :pokr, PokrWeb.Endpoint,
   url: [host: "localhost"],
-  render_errors: [view: PokrWeb.ErrorView, accepts: ~w(html json), layout: false],
+  render_errors: [view: PokrWeb.ErrorView, accepts: ~w(json), layout: false],
   pubsub_server: Pokr.PubSub,
-  live_view: [signing_salt: "JKSkEziK"]
+  live_view: [signing_salt: "oEJYBsdq"]
 
 # Configures the mailer
 #

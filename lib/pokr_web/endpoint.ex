@@ -7,10 +7,12 @@ defmodule PokrWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_pokr_key",
-    signing_salt: "McWbnLiE"
+    signing_salt: "GGxQjmC0"
   ]
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
+
+  socket "/socket", PokrWeb.Socket, websocket: true
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -25,8 +27,6 @@ defmodule PokrWeb.Endpoint do
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
   if code_reloading? do
-    socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
-    plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
     plug Phoenix.Ecto.CheckRepoStatus, otp_app: :pokr
   end
