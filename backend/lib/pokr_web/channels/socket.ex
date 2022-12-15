@@ -3,7 +3,7 @@ defmodule PokrWeb.Socket do
 
   require Logger
 
-  channel "games:*", PokrWeb.GameChannel
+  channel "game:*", PokrWeb.GameChannel
 
   def connect(_params, socket) do
     {:ok, socket}
