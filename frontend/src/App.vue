@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router';
+import { useDarkModeStore } from '@/components/darkMode/useDarkModeStore';
+
+const darkModeStore = useDarkModeStore();
 </script>
 
 <template>
-  <header class="m-8">
-    <nav class="flex text-lg space-x-4">
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/about">About</RouterLink>
-    </nav>
-  </header>
+  <div :class="darkModeStore.isEnabled ? 'dark' : 'bg-white'">
+    <router-view />
 
-  <div class="m-8">
-    <RouterView />
+    <div id="modal" />
   </div>
 </template>
