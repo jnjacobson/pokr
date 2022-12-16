@@ -17,19 +17,24 @@ onMounted(() => {
 
 <template>
   <main class="m-5 space-y-3">
+    <h1 class="font-bold">
+      {{ gameId }}
+    </h1>
+
     <ul>
       <li>
-        Status: {{ gameStore.inGame ? 'connected' : 'offline' }}
+        Status: {{ gameStore.isConnected ? 'connected' : 'offline' }}
       </li>
       <li>
-        Cards: {{ gameStore.game.areCardsRevealed ? 'revealed' : 'hidden' }}
+        Cards: {{ gameStore.areCardsRevealed ? 'revealed' : 'hidden' }}
       </li>
     </ul>
 
     <div>
       <button
-        v-text="gameStore.game.areCardsRevealed ? 'Next voting' : 'Show cards'"
-        @click="gameStore.game.areCardsRevealed ? gameStore.resetCards() : gameStore.revealCards()"
+        class="px-3 py-2 border rounded hover:bg-gray-100"
+        v-text="gameStore.areCardsRevealed ? 'Next voting' : 'Show cards'"
+        @click="gameStore.areCardsRevealed ? gameStore.resetCards() : gameStore.revealCards()"
       />
     </div>
 
@@ -39,9 +44,19 @@ onMounted(() => {
         <li
           v-for="player in gameStore.players"
         >
-          {{ player.name }}
+          {{ player.name }} {{ gameStore.areCardsRevealed ? player.card ?? 'None' : 'Hidden' }}
         </li>
       </ul>
+    </div>
+
+    <div class="flex space-x-3">
+      <button
+        v-for="card in gameStore.deck"
+        :class="{'bg-gray-100': gameStore.myPlayer?.card === card}"
+        class="px-3 py-2 border rounded hover:bg-gray-100"
+        v-text="card"
+        @click="gameStore.chooseCard(card)"
+      />
     </div>
   </main>
 </template>

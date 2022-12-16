@@ -4,23 +4,23 @@ import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
 import { Channel, Socket } from "phoenix";
 
 export const useGameStore = defineStore('game', (): {
-  game: Ref<Game>,
+  gameId: Ref<string | undefined>,
+  deck: Ref<string[]>
+  areCardsRevealed: Ref<boolean>,
   players: Ref<Player[]>,
   myPlayer: ComputedRef<Player | undefined>,
   isLoading: Ref<boolean>,
-  inGame: ComputedRef<boolean>,
+  isConnected: Ref<boolean>,
 
   joinGame: (gameId: string) => void,
-  // chooseCard: (card: string) => Promise<void>,
+  chooseCard: (card: string) => void,
   revealCards: () => void,
   resetCards: () => void,
 } => {
-  const game = ref<Game>({
-    id: null,
-    deck: [],
-    areCardsRevealed: false,
-    isConnected: false,
-  });
+  const gameId = ref<string>();
+  const deck = ref<string[]>([]);
+  const areCardsRevealed = ref(false);
+  const isConnected = ref(false);
   const players = ref<Player[]>([]);
   const myId = ref<string>();
 
@@ -29,7 +29,6 @@ export const useGameStore = defineStore('game', (): {
   );
 
   const isLoading = ref(false);
-  const inGame = computed(() => game.value.isConnected);
 
   const socket = ref<Socket>(new Socket(`ws://${import.meta.env.VITE_BACKEND_URL}/socket`));
   const channel = ref<Channel>();
@@ -46,15 +45,15 @@ export const useGameStore = defineStore('game', (): {
     players.value[idx] = player;
   }
 
-  const joinGame = (gameId: string) => {
+  const joinGame = (newGameId: string) => {
     socket.value.connect();
 
     channel.value = socket.value.channel(`game:${gameId}`);
     channel.value.on('join', (joinPayload: { player_id: string, deck: string[], are_cards_revealed: boolean}) => {
-      game.value.id = gameId;
-      game.value.deck = joinPayload.deck;
-      game.value.areCardsRevealed = joinPayload.are_cards_revealed;
-      game.value.isConnected = true;
+      gameId.value = newGameId;
+      deck.value = joinPayload.deck;
+      areCardsRevealed.value = joinPayload.are_cards_revealed;
+      isConnected.value = true;
 
       myId.value = joinPayload.player_id;
       players.value.push({
@@ -80,10 +79,11 @@ export const useGameStore = defineStore('game', (): {
       players.value.splice(idx, 1);
     });
     channel.value.on('cards_revealed', () => {
-      game.value.areCardsRevealed = true;
+      areCardsRevealed.value = true;
     });
     channel.value.on('cards_reset', () => {
-      game.value.areCardsRevealed = false;
+      areCardsRevealed.value = false;
+      chooseCard(null);
     });
 
     watch(myPlayer, (updatedMyPlayer) => {
@@ -92,7 +92,7 @@ export const useGameStore = defineStore('game', (): {
       }
 
       channel.value?.push('player_updated', updatedMyPlayer);
-    });
+    }, { deep: true });
 
     channel.value.join();
   };
@@ -105,14 +105,26 @@ export const useGameStore = defineStore('game', (): {
     channel.value?.push('cards_reset', {});
   }
 
+  const chooseCard = (card: string | null) => {
+    const myPlayerRaw = myPlayer.value;
+    if (myPlayerRaw === undefined) {
+      return;
+    }
+
+    myPlayerRaw.card = card;
+  }
+
   return {
-    game,
+    gameId,
+    deck,
+    areCardsRevealed,
     players,
     myPlayer,
     isLoading,
-    inGame,
+    isConnected,
 
     joinGame,
+    chooseCard,
     revealCards,
     resetCards,
   };
