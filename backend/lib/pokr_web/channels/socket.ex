@@ -1,13 +1,11 @@
 defmodule PokrWeb.Socket do
   use Phoenix.Socket
 
-  require Logger
-
   channel "game:*", PokrWeb.GameChannel
 
   def connect(_params, socket) do
-    {:ok, socket}
+    {:ok, assign(socket, :id, UUID.uuid1())}
   end
 
-  def id(_socket), do: nil
+  def id(socket), do: socket.assigns[:id]
 end

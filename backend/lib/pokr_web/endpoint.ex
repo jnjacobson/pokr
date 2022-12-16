@@ -14,15 +14,9 @@ defmodule PokrWeb.Endpoint do
 
   socket "/socket", PokrWeb.Socket, websocket: true
 
-  # Serve at "/" the static files from "priv/static" directory.
-  #
-  # You should set gzip to true if you are running phx.digest
-  # when deploying your static files in production.
-  plug Plug.Static,
-    at: "/",
-    from: :pokr,
-    gzip: false,
-    only: ~w(assets fonts images favicon.ico robots.txt)
+  if Mix.env() in [:dev] do
+    plug CORSPlug
+  end
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

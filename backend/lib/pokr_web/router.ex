@@ -7,6 +7,8 @@ defmodule PokrWeb.Router do
 
   scope "/api", PokrWeb do
     pipe_through :api
+
+    post "/games", GameController, :create
   end
 
   # Enables LiveDashboard only for development

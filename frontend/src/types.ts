@@ -5,8 +5,5 @@ export type Player = {
 }
 
 export type Game = {
-    id: string | null;
-    deck: string[];
-    areCardsRevealed: boolean;
-    isConnected: boolean;
+    id: string;
 }

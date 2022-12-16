@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { Game, Player } from "@/types";
+import type { Player } from "@/types";
 import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
 import { Channel, Socket } from "phoenix";
 
@@ -48,7 +48,7 @@ export const useGameStore = defineStore('game', (): {
   const joinGame = (newGameId: string) => {
     socket.value.connect();
 
-    channel.value = socket.value.channel(`game:${gameId}`);
+    channel.value = socket.value.channel(`game:${newGameId}`);
     channel.value.on('join', (joinPayload: { player_id: string, deck: string[], are_cards_revealed: boolean}) => {
       gameId.value = newGameId;
       deck.value = joinPayload.deck;

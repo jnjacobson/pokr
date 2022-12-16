@@ -2,9 +2,6 @@ defmodule PokrWeb.GameChannel do
   use Phoenix.Channel
 
   def join("game:" <> _game_id, _params, socket) do
-    # generate user id
-    socket = assign(socket, :id, UUID.uuid5(:nil, inspect(socket.transport_pid)))
-
     send(self(), :after_join)
 
     {:ok, socket}
