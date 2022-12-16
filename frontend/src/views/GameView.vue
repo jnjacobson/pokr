@@ -9,7 +9,7 @@ const props = defineProps<{
 const gameStore = useGameStore();
 
 onMounted(() => {
-  if (!gameStore.inGame) {
+  if (!gameStore.isConnected) {
     gameStore.joinGame(props.gameId);
   }
 })
