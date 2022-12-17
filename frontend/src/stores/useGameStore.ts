@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import type { Player } from "@/types";
 import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
 import { Channel, Socket } from "phoenix";
+import { usePlayerNameStore } from "@/components/playerName/usePlayerNameStore";
 
 export const useGameStore = defineStore('game', (): {
   gameId: Ref<string | undefined>,
@@ -16,6 +17,8 @@ export const useGameStore = defineStore('game', (): {
   revealCards: () => void,
   resetCards: () => void,
 } => {
+  const playerNameStore = usePlayerNameStore();
+  
   const gameId = ref<string>();
   const deck = ref<string[]>([]);
   const areCardsRevealed = ref(false);
@@ -55,7 +58,7 @@ export const useGameStore = defineStore('game', (): {
       myId.value = joinPayload.player_id;
       players.value.push({
         id: myId.value,
-        name: `user_${myId.value}`,
+        name: playerNameStore.playerName,
         card: null,
       });
     });
@@ -90,6 +93,15 @@ export const useGameStore = defineStore('game', (): {
 
       channel.value?.push('player_updated', updatedMyPlayer);
     }, { deep: true });
+
+    watch(() => playerNameStore.playerName, (newName) => {
+      const myPlayerRaw = myPlayer.value;
+      if (myPlayerRaw === undefined) {
+        return;
+      }
+
+      myPlayerRaw.name = newName;
+    });
 
     channel.value.join();
   };

@@ -3,13 +3,11 @@ import { computed, useAttrs } from 'vue';
 
 withDefaults(defineProps<{
   card: string | null,
-  revealed: boolean,
-  selected: boolean,
-  disabled: boolean,
+  revealed?: boolean,
+  selected?: boolean,
+  disabled?: boolean,
 }>(), {
   revealed: true,
-  disabled: false,
-  selected: false,
 });
 
 const attrs = useAttrs();

@@ -4,7 +4,7 @@ import Card from './Card.vue';
 
 defineProps<{
   player: Player,
-  revealed: boolean,
+  cardRevealed: boolean,
   isMyPlayer: boolean,
 }>();
 </script>
@@ -15,12 +15,12 @@ es (37 sloc)  4.27 KB
   <div class="space-y-1.5 w-28">
     <Card
       :card="player.card"
-      :revealed="revealed"
+      :revealed="cardRevealed"
     />
 
     <div
       :class="{
-        'opacity-60': revealed && player.card === null,
+        'opacity-60': cardRevealed && player.card === null,
         'text-blue-700 dark:text-blue-400': isMyPlayer,
       }"
       class="font-semibold break-words"

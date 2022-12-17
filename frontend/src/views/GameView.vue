@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ChangeNameButton from '@/components/playerName/ChangeNameButton.vue';
 import CenterTable from '@/components/CenterTable.vue';
 import Confetti from '@/components/Confetti.vue';
 import CopyInviteLinkButton from '@/components/CopyInviteLinkButton.vue';
@@ -43,15 +44,11 @@ const oddPlayers = computed(() => (
 
 <template>
   <main class="h-screen w-screen relative py-10 md:py-20 px-6 dark:bg-gray-900 dark:text-blue-100">
-    <CopyInviteLinkButton class="absolute top-5 left-5"/>
+    <div class="absolute top-5 left-5 flex space-x-3">
+      <CopyInviteLinkButton />
+      <ChangeNameButton />
+    </div>
     <DarkModeSwitch class="absolute top-5 right-5" />
-
-    <Confetti
-      class="
-        absolute pointer-events-none bottom-0 top-0
-        right-0 left-0 flex justify-center items-center z-50
-      "
-    />
 
     <transition
       enter-active-class="ease-out duration-100"
@@ -71,6 +68,13 @@ const oddPlayers = computed(() => (
         class="flex flex-col items-center text-center h-full space-y-6"
       >
         <div class="grow flex flex-col items-center justify-center text-center space-y-6 relative w-full">
+          <Confetti
+            class="
+              absolute pointer-events-none bottom-0 top-0
+              right-0 left-0 flex justify-center items-center z-50
+            "
+          />
+
           <div class="flex-1 flex items-end">
             <PlayerRow :players="oddPlayers" />
           </div>
