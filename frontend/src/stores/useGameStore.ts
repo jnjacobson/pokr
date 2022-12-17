@@ -9,7 +9,6 @@ export const useGameStore = defineStore('game', (): {
   areCardsRevealed: Ref<boolean>,
   players: Ref<Player[]>,
   myPlayer: ComputedRef<Player | undefined>,
-  isLoading: Ref<boolean>,
   isConnected: Ref<boolean>,
 
   joinGame: (gameId: string) => void,
@@ -27,8 +26,6 @@ export const useGameStore = defineStore('game', (): {
   const myPlayer = computed(() =>
     players.value.find((player) => player.id === myId.value)
   );
-
-  const isLoading = ref(false);
 
   const socket = ref<Socket>(new Socket(`ws://${import.meta.env.VITE_BACKEND_URL}/socket`));
   const channel = ref<Channel>();
@@ -120,7 +117,6 @@ export const useGameStore = defineStore('game', (): {
     areCardsRevealed,
     players,
     myPlayer,
-    isLoading,
     isConnected,
 
     joinGame,
