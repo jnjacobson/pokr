@@ -48,6 +48,10 @@ export const useGameStore = defineStore('game', (): {
   const joinGame = (newGameId: string) => {
     socket.value.connect();
 
+    if (!socket.value.isConnected) {
+      throw Error('Couldn\'t connect to socket: ' + socket.value.connectionState);
+    }
+
     channel.value = socket.value.channel(`game:${newGameId}`);
     channel.value.on('join', (joinPayload: { player_id: string, deck: string[], are_cards_revealed: boolean}) => {
       gameId.value = newGameId;
