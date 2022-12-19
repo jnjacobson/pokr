@@ -20,9 +20,6 @@ config :pokr, PokrWeb.Endpoint,
   secret_key_base: "eRdFn4BsApNcqekGYk+KsdIt2+iaSavDg0PUpL8FCEkmBJEEn/h0uHA4La7DlkBh",
   server: false
 
-# In test we don't send emails.
-config :pokr, Pokr.Mailer, adapter: Swoosh.Adapters.Test
-
 # Print only warnings and errors during test
 config :logger, level: :warn
 
