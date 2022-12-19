@@ -1,0 +1,15 @@
+[Unit]
+Description=pokr 2.0 backend
+After=network-online.target
+
+[Service]
+WorkingDirectory=
+ExecStart=_build/prod/rel/pokr/bin/pokr start
+Restart=always
+RestartSec=30
+SyslogIdentifier=pokr-backend
+User=jan
+
+
+[Install]
+WantedBy=multi-user.target
