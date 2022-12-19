@@ -19,7 +19,7 @@ router.beforeEach(async (to) => {
   }
 
   const response = await fetch(
-    `http://${import.meta.env.VITE_BACKEND_URL}/api/games`,
+    `${import.meta.env.VITE_BACKEND_API_URL}/games`,
     {
       method: 'POST',
     },

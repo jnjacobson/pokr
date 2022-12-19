@@ -30,7 +30,7 @@ export const useGameStore = defineStore('game', (): {
     players.value.find((player) => player.id === myId.value)
   );
 
-  const socket = ref<Socket>(new Socket(`ws://${import.meta.env.VITE_BACKEND_URL}/socket`));
+  const socket = ref<Socket>(new Socket(import.meta.env.VITE_BACKEND_WS_URL));
   const channel = ref<Channel>();
 
   const addOrUpdatePlayer = (player: Player) => {

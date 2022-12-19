@@ -1,18 +1,5 @@
 import Config
 
-# ## Using releases
-#
-# If you use `mix release`, you need to explicitly enable the server
-# by passing the PHX_SERVER=true when you start it:
-#
-#     PHX_SERVER=true bin/pokr start
-#
-# Alternatively, you can use `mix phx.gen.release` to generate a `bin/server`
-# script that automatically sets the env var above.
-if System.get_env("PHX_SERVER") do
-  config :pokr, PokrWeb.Endpoint, server: true
-end
-
 if config_env() == :prod do
   config :pokr, Pokr.Repo,
     # ssl: true,
@@ -29,11 +16,6 @@ if config_env() == :prod do
       port: 443,
       scheme: "https"
     ],
-    https: [
-      port: 443,
-      cipher_suite: :strong,
-      keyfile: System.fetch_env!("SSL_KEY_PATH"),
-      certfile: System.fetch_env!("SSL_CERT_PATH")
-    ],
-    force_ssl: [hsts: true]
+    http: [ip: {127, 0, 0, 1}, port: 4000],
+    server: true
 end
