@@ -94,7 +94,7 @@ export const useGameStore = defineStore('game', (): {
     channel.value.on('cards_reset', () => {
       areCardsRevealed.value = false;
       
-      ignorePlayerUpdates(() => {
+      ignoreMyPlayerUpdates(() => {
         players.value.forEach((player: Player) => {
           player.card = null;
         });
@@ -102,23 +102,22 @@ export const useGameStore = defineStore('game', (): {
     });
 
     const {
-      ignoreUpdates: ignorePlayerUpdates
-    } = ignorableWatch(myPlayer, (updatedMyPlayer, oldMyPlayer) => {
-      if (updatedMyPlayer === undefined || isEqual(updatedMyPlayer, oldMyPlayer)) {
+      ignoreUpdates: ignoreMyPlayerUpdates,
+    } = ignorableWatch([
+      () => myPlayer.value?.card,
+      () => myPlayer.value?.name,
+    ], ([newCard, newName], [oldCard, oldName]) => {
+      if (newCard === oldCard && newName === oldName) {
         return;
       }
 
-      channel.value?.push('player_updated', updatedMyPlayer);
-    }, { deep: true });
-
-    watch(() => playerNameStore.playerName, (newName) => {
       const myPlayerRaw = myPlayer.value;
       if (myPlayerRaw === undefined) {
         return;
       }
 
-      myPlayerRaw.name = newName;
-    });
+      channel.value?.push('player_updated', myPlayerRaw);
+    }, { deep: true });
 
     channel.value.join();
   };
@@ -130,6 +129,15 @@ export const useGameStore = defineStore('game', (): {
   const resetCards = () => {
     channel.value?.push('cards_reset', {});
   }
+
+  watch(() => playerNameStore.playerName, (newName) => {
+    const myPlayerRaw = myPlayer.value;
+    if (myPlayerRaw === undefined) {
+      return;
+    }
+
+    myPlayerRaw.name = newName;
+  });
 
   const chooseCard = (card: string | null) => {
     const myPlayerRaw = myPlayer.value;
