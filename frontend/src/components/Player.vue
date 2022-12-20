@@ -10,8 +10,6 @@ defineProps<{
 }>();
 </script>
 
-es (37 sloc)  4.27 KB
-
 <template>
   <div class="space-y-1.5 w-28">
     <Card
