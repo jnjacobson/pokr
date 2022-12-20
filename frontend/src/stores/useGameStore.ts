@@ -4,7 +4,6 @@ import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
 import { Channel, Socket } from "phoenix";
 import { usePlayerNameStore } from "@/components/playerName/usePlayerNameStore";
 import { ignorableWatch } from "@vueuse/core";
-import { isEqual } from "lodash-es";
 
 export const useGameStore = defineStore('game', (): {
   gameId: Ref<string | undefined>,

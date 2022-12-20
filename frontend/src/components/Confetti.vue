@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
-import type { AnimationItem } from "lottie-web";
-import lottie from "lottie-web/build/player/lottie_light";
+import type { AnimationItem } from "lottie-web-light";
 
 import { useCountdownStore } from '@/stores/useCountdownStore';
 import { useGameStore } from "@/stores/useGameStore";
+import Lottie from "lottie-web-light";
 
 const confetti = ref<HTMLElement>();
 const confettiAnimation = ref<AnimationItem>();
@@ -17,7 +17,7 @@ onMounted(() => {
     throw Error('Confetti html element not found')
   }
 
-  confettiAnimation.value = lottie.loadAnimation({
+  confettiAnimation.value = Lottie.loadAnimation({
     container: confetti.value,
     renderer: 'svg',
     autoplay: false,
