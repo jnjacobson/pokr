@@ -53,31 +53,30 @@ const setName = () => {
       Hello there! &#128075;
     </h1>
 
-    <label
-      for="name"
-      class="block mb-2.5"
-    >
-      What's your name?
-    </label>
     <form
-      class="sm:flex sm:space-x-4 space-y-3 sm:space-y-0"
+      class="sm:flex sm:space-x-4 space-y-3 sm:space-y-0 sm:items-end"
       @submit.prevent="setName"
     >
-      <input
-        id="name"
-        ref="nameInput"
-        v-model="newPlayerName"
-        class="
-          block w-full shadow-md rounded-md px-4 py-2 bg-gray-100
-          dark:bg-gray-800 appearance-none focus:outline-none focus:ring-2
-          dark:focus:ring-blue-200 focus:ring-blue-500 placeholder-gray-400
-          dark:placeholder-gray-500
-        "
-        placeholder="Enter name..."
-        autocomplete="name"
-        type="text"
-        maxlength="24"
-      />
+      <label class="flex-grow">
+        What's your name?
+
+        <input
+          id="name"
+          ref="nameInput"
+          v-model="newPlayerName"
+          class="
+            block w-full shadow-md rounded-md px-4 py-2 bg-gray-100
+            dark:bg-gray-800 appearance-none focus:outline-none focus:ring-2
+            dark:focus:ring-blue-200 focus:ring-blue-500 placeholder-gray-400
+            dark:placeholder-gray-500 mt-2
+          "
+          placeholder="Enter name..."
+          autocomplete="name"
+          type="text"
+          maxlength="24"
+        />
+      </label>
+
       <button
         :class="{
           'opacity-50 cursor-default': isNameValid,

@@ -40,7 +40,6 @@ const oddPlayers = computed(() => (
     (_: Player, index: number) => (index % 2) === 1,
   )
 ));
-
 </script>
 
 <template>
