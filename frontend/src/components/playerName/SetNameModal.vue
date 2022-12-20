@@ -61,7 +61,6 @@ const setName = () => {
         What's your name?
 
         <input
-          id="name"
           ref="nameInput"
           v-model="newPlayerName"
           class="
