@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
   show: boolean,
 }>();
 
-const emit = defineEmits<{
-  (event: 'close'): void,
+const emit = defineEmits<{ (event: 'close'): void,
 }>();
 
 const wrapper = ref<HTMLElement>();
@@ -21,7 +20,7 @@ watch(() => props.show, (show) => {
     setTimeout(() => {
       body.style.marginRight = '';
       body.classList.remove('overflow-hidden');
-    }, 100)
+    }, 100);
 
     return;
   }

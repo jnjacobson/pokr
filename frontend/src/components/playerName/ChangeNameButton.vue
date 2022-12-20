@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { useGameStore } from '@/stores/useGameStore';
-import { computed, ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
+
 import SetNameModal from './SetNameModal.vue';
 import { usePlayerNameStore } from './usePlayerNameStore';
+
+import { useGameStore } from '@/stores/useGameStore';
 
 const playerNameStore = usePlayerNameStore();
 
@@ -14,7 +16,7 @@ onMounted(() => {
   if (playerNameStore.playerName === 'New Player') {
     showModal.value = true;
   }
-})
+});
 </script>
 
 <template>
@@ -30,6 +32,7 @@ onMounted(() => {
       py-2 px-4 rounded-md transition duration-75 font-semibold
       dark:hover:bg-gray-800 hover:bg-gray-100 text-blue-700 dark:text-blue-400
     "
+    type="button"
     @click="showModal = true"
   >
     {{ gameStore.myPlayer?.name }}

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
+
 import { useDarkModeStore } from '@/components/darkMode/useDarkModeStore';
 
 const darkModeStore = useDarkModeStore();

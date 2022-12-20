@@ -14,8 +14,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (event: 'update:modelValue', value: string): void
-  (event: 'close'): void
+  (event: 'update:modelValue', value: string): void,
+  (event: 'close'): void,
 }>();
 
 const newPlayerName = ref(props.modelValue);
@@ -23,12 +23,12 @@ const nameInput = ref<HTMLInputElement | null>(null);
 
 const isNameValid = computed(
   () => newPlayerName.value.length === 0 || newPlayerName.value.length > 24,
-)
+);
 
 watch(() => props.show, () => {
   newPlayerName.value = props.modelValue;
 
-  nextTick(() => {
+  void nextTick(() => {
     nameInput.value?.focus();
     nameInput.value?.select();
   });

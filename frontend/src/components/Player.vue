@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { Player } from '@/types';
 import Card from './Card.vue';
+
+import type { Player } from '@/types';
 
 defineProps<{
   player: Player,

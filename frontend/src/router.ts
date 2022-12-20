@@ -1,4 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
+
 import type { Game } from './types';
 
 const router = createRouter({
@@ -34,4 +35,4 @@ router.beforeEach(async (to) => {
   return `/games/${id}`;
 });
 
-export default router
+export default router;

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import {useDarkModeStore} from "./useDarkModeStore";
+
+import { useDarkModeStore } from './useDarkModeStore';
 
 const darkModeStore = useDarkModeStore();
 
@@ -18,8 +19,10 @@ const checkbox = ref<HTMLElement>();
     />
     <button
       class="text-2xl transition duration-75 hover:scale-125"
+      type="button"
       @click="checkbox?.click()"
-      v-text="darkModeStore.isEnabled ? '&#x1F315;' : '&#x2600;'"
-    />
+    >
+      {{ darkModeStore.isEnabled ? '&#x1F315;' : '&#x2600;' }}
+    </button>
   </div>
 </template>

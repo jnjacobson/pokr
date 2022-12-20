@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { computed, watch } from 'vue';
+
 import { useCountdownStore } from '@/stores/useCountdownStore';
 import { useGameStore } from '@/stores/useGameStore';
 import type { Player } from '@/types';
-import { computed, watch } from 'vue';
 
 const gameStore = useGameStore();
 const countdownStore = useCountdownStore();
@@ -10,7 +11,6 @@ const countdownStore = useCountdownStore();
 const noCardsChosen = computed(
   () => !gameStore.players.some((player: Player) => player.card !== null),
 );
-
 
 watch(() => gameStore.areCardsRevealed, (areCardsRevealed) => {
   if (!areCardsRevealed) {
@@ -40,8 +40,10 @@ watch(() => gameStore.areCardsRevealed, (areCardsRevealed) => {
         py-2 px-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-200 dark:hover:bg-blue-300
         rounded-md transition font-semibold text-lg text-white dark:text-gray-900
       "
+      type="button"
       @click="gameStore.areCardsRevealed ? gameStore.resetCards() : gameStore.revealCards()"
-      v-text="gameStore.areCardsRevealed ? 'Next voting' : 'Show cards'"
-    />
+    >
+      {{ gameStore.areCardsRevealed ? 'Next voting' : 'Show cards' }}
+    </button>
   </div>
 </template>

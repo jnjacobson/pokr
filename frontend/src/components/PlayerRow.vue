@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import Player from './Player.vue';
+
 import { useCountdownStore } from '@/stores/useCountdownStore';
 import { useGameStore } from '@/stores/useGameStore';
 import type { Player as PlayerType } from '@/types';
-import Player from './Player.vue';
 
 defineProps<{
   players: PlayerType[],

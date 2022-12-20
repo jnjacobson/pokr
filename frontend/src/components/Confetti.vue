@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
-import type { AnimationItem } from "lottie-web-light";
+import { onMounted, ref, watch } from 'vue';
+import type { AnimationItem } from 'lottie-web-light';
+import Lottie from 'lottie-web-light';
 
 import { useCountdownStore } from '@/stores/useCountdownStore';
-import { useGameStore } from "@/stores/useGameStore";
-import Lottie from "lottie-web-light";
+import { useGameStore } from '@/stores/useGameStore';
 
 const confetti = ref<HTMLElement>();
 const confettiAnimation = ref<AnimationItem>();
@@ -14,7 +14,7 @@ const gameStore = useGameStore();
 
 onMounted(() => {
   if (confetti.value === undefined) {
-    throw Error('Confetti html element not found')
+    throw Error('Confetti html element not found');
   }
 
   confettiAnimation.value = Lottie.loadAnimation({
@@ -24,7 +24,7 @@ onMounted(() => {
     loop: false,
     path: 'https://assets10.lottiefiles.com/packages/lf20_wgcqrpue.json',
   });
-})
+});
 
 watch(() => countdownStore.isRunning, (countdownIsRunning) => {
   if (countdownIsRunning || confettiAnimation.value === undefined) {
@@ -39,7 +39,7 @@ watch(() => countdownStore.isRunning, (countdownIsRunning) => {
   const hasEveryoneSameCard = playersWithCard.every(
     (player) => player.card === playersWithCard[0].card,
   );
-  
+
   if (hasEveryoneSameCard) {
     confettiAnimation.value.goToAndPlay(0, false);
   }

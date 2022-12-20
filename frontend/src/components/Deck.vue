@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useGameStore } from "@/stores/useGameStore";
-import Card from "./Card.vue";
+
+import Card from './Card.vue';
+
+import { useGameStore } from '@/stores/useGameStore';
 
 const gameStore = useGameStore();
 
@@ -12,9 +14,9 @@ const isCardSelected = (card: string) => (
 );
 
 const selectCard = (card: string) => {
-  const myPlayer = gameStore.myPlayer;
+  const { myPlayer } = gameStore;
   if (myPlayer === undefined) {
-    throw new Error('Player not defined')
+    throw new Error('Player not defined');
   }
 
   if (myPlayer.card === card) {
@@ -31,6 +33,7 @@ const selectCard = (card: string) => {
   <div class="flex space-x-3">
     <Card
       v-for="card in gameStore.deck"
+      :key="card"
       :card="card"
       :disabled="disabled"
       :selected="isCardSelected(card)"

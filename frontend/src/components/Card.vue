@@ -12,7 +12,7 @@ withDefaults(defineProps<{
 
 const attrs = useAttrs();
 const isClickable = computed(() => !!attrs.onClick);
-const cardComponent = computed(() => isClickable.value ? 'button' : 'div');
+const cardComponent = computed(() => (isClickable.value ? 'button' : 'div'));
 </script>
 
 <template>
@@ -32,8 +32,9 @@ const cardComponent = computed(() => isClickable.value ? 'button' : 'div');
       'hover:-translate-y-1': !selected && !disabled && isClickable,
     }"
     class="border-2 rounded-md w-11 h-16 text-xl font-semibold flex items-center justify-center mx-auto"
-    v-text="revealed ? card : ''"
-  />
+  >
+    {{ revealed ? card : '' }}
+  </component>
 </template>
 
 <style scoped>

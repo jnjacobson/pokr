@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { onMounted, computed } from 'vue';
+
 import ChangeNameButton from '@/components/playerName/ChangeNameButton.vue';
 import CenterTable from '@/components/CenterTable.vue';
 import Confetti from '@/components/Confetti.vue';
@@ -9,7 +11,6 @@ import PlayerRow from '@/components/PlayerRow.vue';
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
 import { useGameStore } from '@/stores/useGameStore';
 import type { Player } from '@/types';
-import { onMounted, computed } from 'vue';
 
 const props = defineProps<{
   gameId: string,
@@ -21,13 +22,13 @@ onMounted(() => {
   if (!gameStore.isConnected) {
     gameStore.joinGame(props.gameId);
   }
-})
+});
 
 const sortedPlayers = computed(() => (
-  gameStore.players.sort((a: Player, b: Player) => (
+  [...gameStore.players].sort((a: Player, b: Player) => (
     (a.name ?? '').localeCompare(b.name ?? '')
-  )
-)));
+  ))
+));
 
 const evenPlayers = computed(() => (
   sortedPlayers.value.filter(
@@ -80,7 +81,7 @@ const oddPlayers = computed(() => (
           </div>
 
           <CenterTable />
-          
+
           <div class="flex-1">
             <PlayerRow :players="evenPlayers" />
           </div>
