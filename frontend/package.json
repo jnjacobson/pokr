@@ -13,7 +13,6 @@
     "lint:fix": "eslint --fix src/**/*.{ts,vue}"
   },
   "dependencies": {
-    "@vue/eslint-config-airbnb-with-typescript": "^7.0.0",
     "@vueuse/core": "^9.8.2",
     "lottie-web-light": "^1.1.0",
     "phoenix": "^1.6.15",
@@ -27,6 +26,7 @@
     "@types/node": "^18.11.12",
     "@types/phoenix": "^1.5.4",
     "@vitejs/plugin-vue": "^4.0.0",
+    "@vue/eslint-config-airbnb-with-typescript": "^7.0.0",
     "@vue/eslint-config-typescript": "^11.0.0",
     "@vue/test-utils": "^2.2.6",
     "@vue/tsconfig": "^0.1.3",
