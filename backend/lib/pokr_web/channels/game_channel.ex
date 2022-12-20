@@ -16,7 +16,7 @@ defmodule PokrWeb.GameChannel do
   def handle_info(:after_join, socket) do
     push(socket, "join", %{"player_id" => socket.assigns[:id], "are_cards_revealed" => false, "deck" => ~w(0 1 2 3 5 8 13 21 34 55 89 ?)})
 
-    broadcast!(socket, "player_joined", %{})
+    broadcast!(socket, "player_joined", %{"id" => socket.assigns[:id]})
 
     {:noreply, socket}
   end

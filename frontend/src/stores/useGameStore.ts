@@ -3,6 +3,8 @@ import type { Player } from "@/types";
 import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
 import { Channel, Socket } from "phoenix";
 import { usePlayerNameStore } from "@/components/playerName/usePlayerNameStore";
+import { ignorableWatch } from "@vueuse/core";
+import { isEqual } from "lodash-es";
 
 export const useGameStore = defineStore('game', (): {
   gameId: Ref<string | undefined>,
@@ -66,7 +68,11 @@ export const useGameStore = defineStore('game', (): {
         card: null,
       });
     });
-    channel.value.on('player_joined', () => {
+    channel.value.on('player_joined', ({ id }) => {
+      if (id === myId.value) {
+        return;
+      }
+      
       // a new player joined, say hello
       channel.value?.push('player_updated', myPlayer.value ?? {});
     });
@@ -87,11 +93,18 @@ export const useGameStore = defineStore('game', (): {
     });
     channel.value.on('cards_reset', () => {
       areCardsRevealed.value = false;
-      chooseCard(null);
+      
+      ignorePlayerUpdates(() => {
+        players.value.forEach((player: Player) => {
+          player.card = null;
+        });
+      });
     });
 
-    watch(myPlayer, (updatedMyPlayer) => {
-      if (updatedMyPlayer === undefined) {
+    const {
+      ignoreUpdates: ignorePlayerUpdates
+    } = ignorableWatch(myPlayer, (updatedMyPlayer, oldMyPlayer) => {
+      if (updatedMyPlayer === undefined || isEqual(updatedMyPlayer, oldMyPlayer)) {
         return;
       }
 

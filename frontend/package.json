@@ -12,6 +12,9 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@types/lodash-es": "^4.17.6",
+    "@vueuse/core": "^9.8.2",
+    "lodash-es": "^4.17.21",
     "lottie-web": "^5.10.0",
     "phoenix": "^1.6.15",
     "pinia": "^2.0.28",
