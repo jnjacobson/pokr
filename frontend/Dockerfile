@@ -1,7 +1,7 @@
 FROM node:18-alpine AS base
 
 # development
-FROM base as development
+FROM base as dev
 ARG USER_ID
 ARG GROUP_ID
 USER $USER_ID:$GROUP_ID
@@ -11,7 +11,7 @@ CMD npm install && npm run dev
 FROM base as builder
 COPY . /app
 WORKDIR /app
-RUN npm install --production && npm run build
+RUN npm install && npm run build && npm prune --production
 
 # nginx state for serving content
 FROM nginx:alpine
