@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  frontend:
+    container_name: pokr_frontend
+    build:
+      context: ./frontend
+      target: development
+      args:
+        GROUP_ID: $GROUP_ID
+        USER_ID: $USER_ID
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+    - '5173:5173'
+    tty: true
+
+  backend:
+    container_name: pokr_backend
+    build: ./backend
+    ports:
+      - '4000:4000'
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: pokr_postgres
+    image: postgres:15.2-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /data/postgres
+    volumes:
+      - postgres-db:/data/postgres
+    ports:
+      - '5432:5432'
+
+volumes:
+  postgres-db:
+    driver: local

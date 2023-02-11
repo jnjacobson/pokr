@@ -1,9 +1,17 @@
-FROM node:18-alpine AS builder
+FROM node:18-alpine AS base
 
+# development
+FROM base as development
+ARG USER_ID
+ARG GROUP_ID
+USER $USER_ID:$GROUP_ID
+CMD npm install && npm run dev
+
+# build assets
+FROM base as builder
 COPY . /app
 WORKDIR /app
-
-RUN npm install && npm run build
+RUN npm install --production && npm run build
 
 # nginx state for serving content
 FROM nginx:alpine
@@ -15,6 +23,5 @@ RUN rm -rf ./*
 COPY --from=builder /app/dist .
 
 EXPOSE 80 443
-
 # Containers run nginx with global directives and daemon off
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
