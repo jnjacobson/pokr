@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
 
-import { useDarkModeStore } from '@/components/darkMode/useDarkModeStore';
+import { useThemeStore } from './components/theme/useThemeStore';
 
-const darkModeStore = useDarkModeStore();
+const themeStore = useThemeStore();
 </script>
 
 <template>
-  <div :class="darkModeStore.isEnabled ? 'dark' : 'bg-white'">
+  <div :class="themeStore.selectedTheme">
     <router-view />
 
     <div id="modal" />

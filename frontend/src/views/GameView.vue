@@ -5,12 +5,12 @@ import ChangeNameButton from '@/components/playerName/ChangeNameButton.vue';
 import CenterTable from '@/components/CenterTable.vue';
 import Confetti from '@/components/Confetti.vue';
 import CopyInviteLinkButton from '@/components/CopyInviteLinkButton.vue';
-import DarkModeSwitch from '@/components/darkMode/DarkModeSwitch.vue';
 import Deck from '@/components/Deck.vue';
 import PlayerRow from '@/components/PlayerRow.vue';
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
 import { useGameStore } from '@/stores/useGameStore';
 import type { Player } from '@/types';
+import ThemeSelect from '@/components/theme/ThemeSelect.vue';
 
 const props = defineProps<{
   gameId: string,
@@ -43,12 +43,12 @@ const oddPlayers = computed(() => (
 </script>
 
 <template>
-  <main class="h-screen w-screen relative py-10 md:py-20 px-6 dark:bg-gray-900 dark:text-blue-100">
+  <main class="h-screen w-screen relative py-10 md:py-20 px-6 bg-background text-text">
     <div class="absolute top-5 left-5 flex space-x-3">
       <CopyInviteLinkButton />
       <ChangeNameButton />
     </div>
-    <DarkModeSwitch class="absolute top-5 right-5" />
+    <ThemeSelect class="absolute top-5 right-5" />
 
     <transition
       enter-active-class="ease-out duration-100"
