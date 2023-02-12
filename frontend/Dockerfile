@@ -5,7 +5,7 @@ FROM base as dev
 ARG USER_ID
 ARG GROUP_ID
 USER $USER_ID:$GROUP_ID
-CMD npm install && npm run dev
+CMD npm install && npm run dev -- --host 0.0.0.0
 
 # build assets
 FROM base as builder

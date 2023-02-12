@@ -4,14 +4,14 @@ import Config
 config :pokr, Pokr.Repo,
   username: "postgres",
   password: "postgres",
-  hostname: "localhost",
-  database: "pokr_dev",
+  hostname: "postgres",
+  database: "pokr",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
 config :pokr, PokrWeb.Endpoint,
-  http: [ip: {127, 0, 0, 1}, port: 4000],
+  http: [ip: {0, 0, 0, 0}, port: 4000],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
