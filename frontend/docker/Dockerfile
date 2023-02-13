@@ -9,7 +9,7 @@ CMD npm install && npm run dev -- --host 0.0.0.0
 
 # build assets
 FROM base as builder
-COPY . /app
+COPY .. /app
 WORKDIR /app
 RUN npm install && npm run build && npm prune --production
 
@@ -21,6 +21,9 @@ WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 # Copy static assets from builder stage
 COPY --from=builder /app/dist .
+
+COPY --from=builder /app/docker/nginx/prod.conf .
+RUN mv --force prod.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80 443
 # Containers run nginx with global directives and daemon off

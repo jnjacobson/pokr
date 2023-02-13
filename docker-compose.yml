@@ -5,6 +5,7 @@ services:
     container_name: pokr_frontend
     build:
       context: ./frontend
+      dockerfile: ./docker/Dockerfile
       target: dev
       args:
         GROUP_ID: $GROUP_ID
@@ -20,6 +21,7 @@ services:
     container_name: pokr_backend
     build:
       context: ./backend
+      dockerfile: ./docker/Dockerfile
       target: dev
       args:
         GROUP_ID: $GROUP_ID

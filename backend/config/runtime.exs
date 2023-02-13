@@ -16,6 +16,6 @@ if config_env() == :prod do
       port: 443,
       scheme: "https"
     ],
-    http: [ip: {127, 0, 0, 1}, port: 4000],
+    http: [ip: {0, 0, 0, 0}, port: 4000],
     server: true
 end

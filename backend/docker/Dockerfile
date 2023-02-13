@@ -13,7 +13,7 @@ CMD mix deps.get && mix phx.server
 # production
 FROM base
 
-COPY . /app
+COPY .. /app
 WORKDIR /app
 
 RUN rm -rf _build deps
