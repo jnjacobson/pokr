@@ -16,6 +16,8 @@ defmodule PokrWeb.Endpoint do
 
   if Mix.env() in [:dev] do
     plug CORSPlug
+  else
+    plug CORSPlug, origin: ~r/https.*pokr\.elbe\.software$/
   end
 
   # Code reloading can be explicitly enabled under the
