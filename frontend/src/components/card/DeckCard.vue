@@ -18,7 +18,7 @@ defineProps<{
     }"
     class="
       border-2 rounded-md w-11 h-16 text-xl font-semibold flex items-center justify-center
-      mx-auto transition duration-150 border-blue-600 dark:text-blue-400 dark:border-blue-400
+      mx-auto transition duration-150 ease-out border-blue-600 dark:text-blue-400 dark:border-blue-400
     "
     type="button"
   >

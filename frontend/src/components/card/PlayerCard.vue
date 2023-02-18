@@ -1,20 +1,43 @@
 <script setup lang="ts">
 defineProps<{
   value: string | null,
-  revealed?: boolean,
+  revealed: boolean,
 }>();
 </script>
 
 <template>
   <div
-    :class="{
-      'bg-gray-200 border-gray-200 dark:bg-gray-700 dark:border-gray-700': value === null,
-      'card-background bg-blue-200 border-blue-200 dark:bg-blue-400 dark:border-blue-400': !revealed && value !== null,
-      'border-blue-600  dark:text-blue-400 dark:border-blue-400': revealed && value !== null,
-    }"
-    class="border-2 rounded-md w-11 h-16 text-xl font-semibold flex items-center justify-center mx-auto text-blue-600 dark:text-blue-400"
+    class="mx-auto w-11 h-16"
+    style="perspective: 20rem;"
   >
-    {{ revealed ? value : '' }}
+    <div
+      v-if="value === null"
+      class="rounded-md w-full h-full bg-gray-200 dark:bg-gray-700"
+    />
+
+    <div
+      v-else
+      :style="revealed ? 'transform: rotateY(180deg);' : ''"
+      style="transform-style: preserve-3d;"
+      class="rounded-md w-full h-full text-xl font-semibold relative transition-transform duration-200 ease-out"
+    >
+      <div
+        class="
+          absolute w-full h-full rounded-md border-2 card-background
+          bg-blue-200 border-blue-200 dark:bg-blue-400 dark:border-blue-400
+        "
+        style="backface-visibility: hidden;"
+      />
+      <div
+        class="
+          absolute w-full h-full rounded-md border-2 flex items-center justify-center
+          text-blue-600 dark:text-blue-400 border-blue-600 dark:text-blue-400 dark:border-blue-400
+        "
+        style="transform: rotateY(180deg) translateZ(0); backface-visibility: hidden; will-change: transform;"
+      >
+        {{ value }}
+      </div>
+    </div>
   </div>
 </template>
 
