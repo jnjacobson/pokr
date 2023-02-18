@@ -1,40 +1,21 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
-
-withDefaults(defineProps<{
-  card: string | null,
+defineProps<{
+  value: string | null,
   revealed?: boolean,
-  selected?: boolean,
-  disabled?: boolean,
-}>(), {
-  revealed: true,
-});
-
-const attrs = useAttrs();
-const isClickable = computed(() => !!attrs.onClick);
-const cardComponent = computed(() => (isClickable.value ? 'button' : 'div'));
+}>();
 </script>
 
 <template>
-  <component
-    :is="cardComponent"
+  <div
     :class="{
-      'transition duration-150': isClickable,
-      'bg-gray-200 border-gray-200 dark:bg-gray-700 dark:border-gray-700': card === null,
-      'card-background bg-blue-200 border-blue-200 dark:bg-blue-400 dark:border-blue-400': !revealed && card !== null,
-      'border-blue-600  dark:text-blue-400 dark:border-blue-400': revealed && card !== null,
-      'text-white dark:text-gray-900 -translate-y-1.5': selected,
-      'border-gray-300 dark:border-gray-600 cursor-default': disabled,
-      'bg-blue-600 dark:bg-blue-400': selected && !disabled,
-      'bg-gray-300 dark:bg-gray-600 dark:text-gray-900': selected && disabled,
-      'text-gray-300 dark:text-gray-600': !selected && disabled,
-      'text-blue-600 dark:text-blue-400': !selected && !disabled,
-      'hover:-translate-y-1': !selected && !disabled && isClickable,
+      'bg-gray-200 border-gray-200 dark:bg-gray-700 dark:border-gray-700': value === null,
+      'card-background bg-blue-200 border-blue-200 dark:bg-blue-400 dark:border-blue-400': !revealed && value !== null,
+      'border-blue-600  dark:text-blue-400 dark:border-blue-400': revealed && value !== null,
     }"
-    class="border-2 rounded-md w-11 h-16 text-xl font-semibold flex items-center justify-center mx-auto"
+    class="border-2 rounded-md w-11 h-16 text-xl font-semibold flex items-center justify-center mx-auto text-blue-600 dark:text-blue-400"
   >
-    {{ revealed ? card : '' }}
-  </component>
+    {{ revealed ? value : '' }}
+  </div>
 </template>
 
 <style scoped>

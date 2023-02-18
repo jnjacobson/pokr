@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import Card from './Card.vue';
-
 import type { Player } from '@/types';
+import PlayerCard from '@/components/card/PlayerCard.vue';
 
 defineProps<{
   player: Player,
@@ -12,8 +11,8 @@ defineProps<{
 
 <template>
   <div class="space-y-1.5 w-28">
-    <Card
-      :card="player.card"
+    <PlayerCard
+      :value="player.card"
       :revealed="cardRevealed"
     />
 

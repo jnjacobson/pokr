@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import Card from './Card.vue';
-
 import { useGameStore } from '@/stores/useGameStore';
+import DeckCard from '@/components/card/DeckCard.vue';
 
 const gameStore = useGameStore();
 
@@ -31,10 +30,10 @@ const selectCard = (card: string) => {
 
 <template>
   <div class="flex space-x-3">
-    <Card
+    <DeckCard
       v-for="card in gameStore.deck"
       :key="card"
-      :card="card"
+      :value="card"
       :disabled="disabled"
       :selected="isCardSelected(card)"
       @click="!disabled && selectCard(card)"
