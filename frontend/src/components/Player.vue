@@ -10,7 +10,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="space-y-1.5 w-28">
+  <li class="space-y-1.5 w-20 md:w-28">
     <PlayerCard
       :value="player.card"
       :revealed="cardRevealed"
@@ -24,5 +24,5 @@ defineProps<{
       class="font-semibold break-words"
       v-text="player.name ?? 'unknown'"
     />
-  </div>
+  </li>
 </template>

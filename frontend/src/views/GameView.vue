@@ -43,13 +43,7 @@ const oddPlayers = computed(() => (
 </script>
 
 <template>
-  <main class="h-screen w-screen relative py-10 md:py-20 px-6 dark:bg-gray-900 dark:text-blue-100">
-    <div class="absolute top-5 left-5 flex space-x-3">
-      <CopyInviteLinkButton />
-      <ChangeNameButton />
-    </div>
-    <DarkModeSwitch class="absolute top-5 right-5" />
-
+  <main class="h-screen w-screen relative py-10 md:py-20 px-5 dark:bg-gray-900 dark:text-blue-100">
     <transition
       enter-active-class="ease-out duration-100"
       enter-from-class="opacity-0"
@@ -75,18 +69,18 @@ const oddPlayers = computed(() => (
             "
           />
 
-          <div class="flex-1 flex items-end">
+          <div class="flex-1 flex items-end max-w-full overflow-x-auto">
             <PlayerRow :players="oddPlayers" />
           </div>
 
           <CenterTable />
 
-          <div class="flex-1">
+          <div class="flex-1 max-w-full overflow-x-auto">
             <PlayerRow :players="evenPlayers" />
           </div>
         </div>
 
-        <div>
+        <div class="max-w-full">
           <p
             :class="gameStore.areCardsRevealed && 'opacity-40'"
             class="mb-6"
@@ -98,5 +92,11 @@ const oddPlayers = computed(() => (
         </div>
       </div>
     </transition>
+
+    <div class="absolute top-5 left-5 flex space-x-3">
+      <CopyInviteLinkButton />
+      <ChangeNameButton />
+    </div>
+    <DarkModeSwitch class="absolute top-5 right-5" />
   </main>
 </template>

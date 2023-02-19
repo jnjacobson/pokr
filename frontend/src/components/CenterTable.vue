@@ -23,7 +23,12 @@ watch(() => gameStore.areCardsRevealed, (areCardsRevealed) => {
 
 <template>
   <!-- center table -->
-  <div class="bg-blue-100 dark:bg-gray-800 rounded-full w-96 h-48 flex justify-center items-center z-10">
+  <div
+    class="
+      bg-blue-100 dark:bg-gray-800 rounded-full max-w-full
+      w-96 h-48 flex justify-center items-center z-10
+    "
+  >
     <p v-if="noCardsChosen && !gameStore.areCardsRevealed">
       Pick your cards!
     </p>

@@ -30,10 +30,10 @@ defineProps<{
       />
       <div
         class="
-          absolute w-full h-full rounded-md border-2 flex items-center justify-center
-          text-blue-600 dark:text-blue-400 border-blue-600 dark:text-blue-400 dark:border-blue-400
+          absolute w-full h-full rounded-md border-2 flex items-center justify-center will-change-transform
+          text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400
         "
-        style="transform: rotateY(180deg) translateZ(0); backface-visibility: hidden; will-change: transform;"
+        style="transform: rotateY(180deg); backface-visibility: hidden;"
       >
         {{ value }}
       </div>

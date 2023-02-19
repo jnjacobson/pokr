@@ -18,8 +18,8 @@ defineProps<{
       'text-blue-600 dark:text-blue-400 hover:-translate-y-1': !selected && !disabled,
     }"
     class="
-      border-2 rounded-md w-11 h-16 text-xl font-semibold flex items-center justify-center
-      mx-auto transition duration-150 ease-out
+      border-2 rounded-md w-11 h-16 flex items-center justify-center
+      mx-auto transition duration-150 ease-out text-xl font-semibold
     "
     type="button"
   >

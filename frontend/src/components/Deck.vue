@@ -29,14 +29,17 @@ const selectCard = (card: string) => {
 </script>
 
 <template>
-  <div class="flex space-x-3">
-    <DeckCard
+  <ul class="flex space-x-3 overflow-x-auto pt-1.5 -mt-1.5">
+    <li
       v-for="card in gameStore.deck"
       :key="card"
-      :value="card"
-      :disabled="disabled"
-      :selected="isCardSelected(card)"
-      @click="!disabled && selectCard(card)"
-    />
-  </div>
+    >
+      <DeckCard
+        :value="card"
+        :disabled="disabled"
+        :selected="isCardSelected(card)"
+        @click="!disabled && selectCard(card)"
+      />
+    </li>
+  </ul>
 </template>

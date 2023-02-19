@@ -14,7 +14,7 @@ const countdownStore = useCountdownStore();
 </script>
 
 <template>
-  <div class="flex space-x-6">
+  <ul class="flex space-x-3 md:space-x-6 shrink-0">
     <Player
       v-for="player in players"
       :key="player.id"
@@ -22,5 +22,5 @@ const countdownStore = useCountdownStore();
       :card-revealed="gameStore.areCardsRevealed && !countdownStore.isRunning"
       :is-my-player="player.id === gameStore.myPlayer?.id"
     />
-  </div>
+  </ul>
 </template>
