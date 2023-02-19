@@ -19,7 +19,7 @@ defineProps<{
       v-else
       :style="revealed ? 'transform: rotateY(180deg);' : ''"
       style="transform-style: preserve-3d;"
-      class="rounded-md w-full h-full text-xl font-semibold relative transition-transform duration-200 ease-out"
+      class="w-full h-full text-2xl font-semibold relative transition-transform duration-200 ease-out"
     >
       <div
         class="
