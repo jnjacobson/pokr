@@ -26,7 +26,7 @@ watch(() => gameStore.areCardsRevealed, (areCardsRevealed) => {
   <div
     class="
       bg-blue-100 dark:bg-gray-800 rounded-full max-w-full
-      w-96 h-48 flex justify-center items-center z-10
+      w-96 h-40 md:h-48 flex justify-center items-center z-10
     "
   >
     <p v-if="noCardsChosen && !gameStore.areCardsRevealed">

@@ -61,7 +61,7 @@ const oddPlayers = computed(() => (
         v-else
         class="flex flex-col items-center text-center h-full space-y-6"
       >
-        <div class="grow flex flex-col items-center justify-center text-center space-y-6 relative w-full">
+        <div class="grow flex flex-col items-center justify-center text-center space-y-4 md:space-y-6 relative w-full">
           <Confetti
             class="
               absolute pointer-events-none bottom-0 top-0
