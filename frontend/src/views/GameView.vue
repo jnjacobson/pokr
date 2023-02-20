@@ -43,7 +43,7 @@ const oddPlayers = computed(() => (
 </script>
 
 <template>
-  <main class="h-screen w-screen relative py-10 md:py-20 px-5 dark:bg-gray-900 dark:text-blue-100 overscroll-y-none">
+  <main class="h-screen w-screen relative py-10 md:py-20 px-5 dark:text-blue-100 overscroll-y-none">
     <transition
       enter-active-class="ease-out duration-100"
       enter-from-class="opacity-0"

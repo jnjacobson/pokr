@@ -18,6 +18,10 @@ export const useDarkModeStore = defineStore('darkMode', () => {
     localStorage.setItem('darkMode', value.toString());
   });
 
+  watch(isEnabled, (value) => {
+    document.documentElement.classList[value ? 'add' : 'remove']('dark');
+  }, { immediate: true });
+
   return {
     isEnabled,
   };
