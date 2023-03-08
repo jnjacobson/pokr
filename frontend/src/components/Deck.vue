@@ -29,7 +29,7 @@ const selectCard = (card: string) => {
 </script>
 
 <template>
-  <ul class="flex space-x-3 overflow-x-auto pt-1.5 -mt-1.5">
+  <ol class="flex space-x-3 overflow-x-auto pt-1.5 -mt-1.5">
     <li
       v-for="card in gameStore.deck"
       :key="card"
@@ -41,5 +41,5 @@ const selectCard = (card: string) => {
         @click="!disabled && selectCard(card)"
       />
     </li>
-  </ul>
+  </ol>
 </template>

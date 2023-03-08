@@ -22,7 +22,6 @@ watch(() => gameStore.areCardsRevealed, (areCardsRevealed) => {
 </script>
 
 <template>
-  <!-- center table -->
   <div
     class="
       bg-blue-100 dark:bg-gray-800 rounded-full max-w-full

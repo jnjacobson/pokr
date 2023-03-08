@@ -15,7 +15,7 @@ export const useCountdownStore = defineStore('countdown', () => {
     countdown.value = num;
     setTimeout(() => {
       countDownFrom(num - 1);
-    }, 500);
+    }, 450);
   };
 
   const isRunning = computed(() => countdown.value !== undefined);

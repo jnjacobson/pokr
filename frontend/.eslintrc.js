@@ -45,6 +45,7 @@ module.exports = {
 
         'vuejs-accessibility/form-control-has-label': 'off',
         'vuejs-accessibility/click-events-have-key-events': 'off',
+        'no-plusplus': 'off',
       },
 
       settings: {
