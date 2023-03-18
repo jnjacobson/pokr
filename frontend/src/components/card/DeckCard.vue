@@ -19,7 +19,7 @@ defineProps<{
     }"
     class="
       border-2 rounded-md w-11 h-16 flex items-center justify-center
-      mx-auto transition duration-150 ease-out text-2xl font-semibold
+      mx-auto transition duration-150 ease-out text-xl font-semibold
     "
     type="button"
   >

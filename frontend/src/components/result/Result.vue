@@ -57,8 +57,8 @@ onMounted(() => {
 
       <div
         class="
-          border-2 border-gray-700 dark:border-gray-300 text-gray-700 dark:text-gray-300 rounded-md w-11 h-16
-          flex items-center justify-center text-2xl font-semibold
+          border-2 border-gray-700 dark:border-gray-300 text-gray-700 dark:text-gray-300
+          flex items-center justify-center text-xl font-semibold rounded-md w-11 h-16
         "
         type="button"
       >

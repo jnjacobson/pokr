@@ -1,6 +1,6 @@
 defmodule Pokr.Game do
   defstruct [
-    deck: ~w(0 1 2 3 5 8 13 21 34 55 89 ?),
+    deck: ~w(0 ½ 1 2 3 5 8 13 20 40 100 ☕ ?),
     are_cards_revealed: false,
     player_count: 0,
   ]
