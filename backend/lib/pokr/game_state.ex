@@ -55,13 +55,15 @@ defmodule Pokr.GameState do
 
   @spec decrement_player_count(String.t()) :: :ok
   def decrement_player_count(game_id) do
-    if !has_players?(game_id) do
-      :error
-    end
+    case has_players?(game_id) do
+      true ->
+        Agent.update(__MODULE__, fn state ->
+          update_in(state, [game_id, Access.key(:player_count)], fn count -> count - 1 end)
+        end)
 
-    Agent.update(__MODULE__, fn state ->
-      update_in(state, [game_id, Access.key(:player_count)], fn count -> count - 1 end)
-    end)
+      false ->
+        :error
+    end
   end
 
   @spec has_players?(String.t()) :: boolean()
