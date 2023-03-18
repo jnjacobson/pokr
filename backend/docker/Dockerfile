@@ -16,7 +16,7 @@ FROM base
 COPY .. /app
 WORKDIR /app
 
-RUN rm -rf _build deps
+RUN rm -rf _build deps .env.dist .gitignore Makefile README.md
 
 # install hex & rebar
 RUN mix local.hex --force && mix local.rebar

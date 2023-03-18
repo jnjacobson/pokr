@@ -15,9 +15,9 @@ defmodule Pokr.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Pokr.PubSub},
       # Start the Endpoint (http/https)
-      PokrWeb.Endpoint
-      # Start a worker by calling: Pokr.Worker.start_link(arg)
-      # {Pokr.Worker, arg}
+      PokrWeb.Endpoint,
+
+      Pokr.GameState,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
