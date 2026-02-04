@@ -7,7 +7,7 @@ import {
   type ComputedRef,
 } from 'vue';
 import { Channel, Socket } from 'phoenix';
-import { ignorableWatch } from '@vueuse/core';
+import { watchIgnorable } from '@vueuse/core';
 
 import { usePlayerNameStore } from '@/components/playerName/usePlayerNameStore';
 import type { Player } from '@/types';
@@ -41,7 +41,7 @@ export const useGameStore = defineStore('game', (): {
 
   const {
     ignoreUpdates: ignoreMyPlayerUpdates,
-  } = ignorableWatch([
+  } = watchIgnorable([
     () => myPlayer.value?.card,
     () => myPlayer.value?.name,
   ], ([newCard, newName], [oldCard, oldName]) => {
@@ -66,7 +66,7 @@ export const useGameStore = defineStore('game', (): {
     myPlayerRaw.name = newName;
   });
 
-  const addOrUpdatePlayer = (player: Player) => {
+  function addOrUpdatePlayer(player: Player) {
     const idx = players.value.findIndex(({ id }) => id === player.id);
 
     if (idx === -1) {
@@ -76,9 +76,9 @@ export const useGameStore = defineStore('game', (): {
     }
 
     players.value[idx] = player;
-  };
+  }
 
-  const joinGame = (newGameId: string) => {
+  function joinGame(newGameId: string) {
     socket.value.connect();
 
     if (!socket.value.isConnected) {
@@ -133,24 +133,24 @@ export const useGameStore = defineStore('game', (): {
     });
 
     channel.value.join();
-  };
+  }
 
-  const revealCards = () => {
+  function revealCards() {
     channel.value?.push('cards_revealed', {});
-  };
+  }
 
-  const resetCards = () => {
+  function resetCards() {
     channel.value?.push('cards_reset', {});
-  };
+  }
 
-  const chooseCard = (card: string | null) => {
+  function chooseCard(card: string | null) {
     const myPlayerRaw = myPlayer.value;
     if (myPlayerRaw === undefined) {
       return;
     }
 
     myPlayerRaw.card = card;
-  };
+  }
 
   return {
     gameId,
