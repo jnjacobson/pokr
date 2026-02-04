@@ -57,7 +57,7 @@ watch(() => props.show, (show) => {
         >
           <div
             v-if="show"
-            class="fixed inset-0 transition-opacity"
+            class="fixed inset-0 transition-opacity z-0"
             aria-hidden="true"
           >
             <div
@@ -87,7 +87,7 @@ watch(() => props.show, (show) => {
             class="
               inline-block align-bottom bg-blue-100 dark:bg-gray-900 dark:text-blue-100 rounded-lg px-4 pt-5
               pb-4 text-left overflow-hidden shadow-xl transform sm:max-w-lg
-              transition-all sm:my-8 sm:align-middle w-full sm:p-6
+              transition-all sm:my-8 sm:align-middle w-full sm:p-6 relative z-10
             "
             role="dialog"
             aria-modal="true"
