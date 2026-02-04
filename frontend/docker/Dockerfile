@@ -1,9 +1,10 @@
-FROM node:18-alpine AS base
+FROM node:24.0.0-alpine AS base
 
 # development
 FROM base as dev
 ARG USER_ID
 ARG GROUP_ID
+RUN mkdir -p /.npm && chown -R $USER_ID:$GROUP_ID /.npm
 USER $USER_ID:$GROUP_ID
 CMD npm install && npm run dev -- --host 0.0.0.0
 
@@ -14,7 +15,7 @@ WORKDIR /app
 RUN npm install && npm run build && npm prune --production
 
 # nginx state for serving content
-FROM nginx:alpine
+FROM nginx:1.27.3-alpine
 # Set working directory to nginx asset directory
 WORKDIR /usr/share/nginx/html
 # Remove default nginx static assets

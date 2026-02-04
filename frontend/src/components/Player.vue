@@ -21,7 +21,7 @@ defineProps<{
         'opacity-60': cardRevealed && player.card === null,
         'text-blue-700 dark:text-blue-400': isMyPlayer,
       }"
-      class="font-semibold break-words"
+      class="font-semibold wrap-break-word"
       v-text="player.name ?? 'unknown'"
     />
   </li>

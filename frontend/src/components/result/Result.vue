@@ -43,12 +43,12 @@ onMounted(() => {
     <li
       v-for="[card, count] in Object.entries(cardPlayerCountDict)"
       :key="card"
-      class="space-y-3 w-11 flex flex-col items-center"
+      class="gap-3 w-11 flex flex-col items-center"
     >
       <div class="m-auto relative w-2.5 rounded-full h-16 bg-gray-200 dark:bg-gray-800">
         <div
           class="
-            absolute w-full rounded-full ease-out outline outline-2
+            absolute w-full rounded-full ease-out outline-2
             bottom-0 bg-gray-700 dark:bg-gray-300 outline-white dark:outline-gray-900
           "
           :style="`height: ${count / totalPlayersWithCardCount * heightModifier}%; transition: height .5s;`"
