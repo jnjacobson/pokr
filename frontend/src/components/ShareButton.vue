@@ -18,7 +18,7 @@ watch(() => darkModeStore.isEnabled, () => {
   void generateQrCode();
 });
 
-const generateQrCode = async () => {
+async function generateQrCode() {
   if (!inviteUrl.value) {
     return;
   }
@@ -36,7 +36,7 @@ const generateQrCode = async () => {
   } finally {
     isGenerating.value = false;
   }
-};
+}
 
 const gameStore = useGameStore();
 
