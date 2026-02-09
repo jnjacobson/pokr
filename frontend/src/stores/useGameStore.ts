@@ -7,7 +7,7 @@ import {
   type ComputedRef,
 } from 'vue';
 import { Channel, Socket, Presence } from 'phoenix';
-import { useLocalStorage, useSessionStorage, watchIgnorable } from '@vueuse/core';
+import { useLocalStorage, useSessionStorage } from '@vueuse/core';
 
 import { usePlayerNameStore } from '@/components/playerName/usePlayerNameStore';
 import type {JoinPayload, Player, SessionReplacedPayload } from '@/types';
@@ -55,34 +55,9 @@ export const useGameStore = defineStore('game', (): {
   socket.value.onOpen(() => { isConnected.value = true; });
   socket.value.onClose(() => { isConnected.value = false; });
 
-  const {
-    ignoreUpdates: ignoreMyPlayerUpdates,
-  } = watchIgnorable([
-    () => myPlayer.value?.card,
-    () => myPlayer.value?.name,
-  ], ([newCard, newName], [oldCard, oldName]) => {
-    if (newCard === oldCard && newName === oldName) {
-      return;
-    }
-
-    const myPlayerRaw = myPlayer.value;
-    if (myPlayerRaw === undefined) {
-      return;
-    }
-
-    channel.value?.push(ChannelEvent.PlayerUpdated, myPlayerRaw);
-  }, { deep: true });
-
   watch(() => playerNameStore.playerName, (newName) => {
-    const myPlayerRaw = myPlayer.value;
-    if (myPlayerRaw === undefined) {
-      return;
-    }
-
-    myPlayerRaw.name = newName;
+    updateMyPlayer({ name: newName });
   });
-
-  /** Actions */
 
   function joinGame(newGameId: string) {
     if (channel.value) {
@@ -122,13 +97,19 @@ export const useGameStore = defineStore('game', (): {
   }
 
   function chooseCard(card: string | null) {
-    const myPlayerRaw = myPlayer.value;
-    if (myPlayerRaw === undefined) {
+    updateMyPlayer({ card });
+  }
+
+  function updateMyPlayer(player: Partial<Player>) {
+    if (myPlayer.value === undefined) {
       return;
     }
 
-    myPlayerRaw.card = card;
-    myCard.value = card;
+    myPlayer.value.name = player.name ?? myPlayer.value.name;
+    myPlayer.value.card = player.card ?? myPlayer.value.card;
+    myCard.value = player.card;
+    
+    channel.value?.push(ChannelEvent.PlayerUpdated, myPlayer.value);
   }
 
   /** Callback functions for events */
@@ -143,15 +124,13 @@ export const useGameStore = defineStore('game', (): {
     players.value = players.value.filter((player) => activeIds.includes(player.id));
 
     const newPlayers = activeIds.filter((id) => !players.value.some((p) => p.id === id));
-    ignoreMyPlayerUpdates(() => {
-      newPlayers.forEach((id) => {
-        players.value.push({
-          id,
-          name: id === myId.value ? playerNameStore.playerName : 'New Player',
-          card: id === myId.value ? myCard.value : null,
-        });
+    newPlayers.forEach((id) => {
+      players.value.push({
+        id,
+        name: id === myId.value ? playerNameStore.playerName : 'New Player',
+        card: id === myId.value ? myCard.value : null,
       });
-    })
+    });
 
     const somebodyElseJoined = newPlayers.length > 0 && !newPlayers.includes(myId.value ?? '');
 
@@ -199,10 +178,8 @@ export const useGameStore = defineStore('game', (): {
     areCardsRevealed.value = false;
     myCard.value = null;
 
-    ignoreMyPlayerUpdates(() => {
-      players.value.forEach((player: Player) => {
-        player.card = null;
-      });
+    players.value.forEach((player: Player) => {
+      player.card = null;
     });
   }
 
