@@ -143,17 +143,19 @@ export const useGameStore = defineStore('game', (): {
     players.value = players.value.filter((player) => activeIds.includes(player.id));
 
     const newPlayers = activeIds.filter((id) => !players.value.some((p) => p.id === id));
-    newPlayers.forEach((id) => {
-      players.value.push({
-        id,
-        name: id === myId.value ? playerNameStore.playerName : 'New Player',
-        card: id === myId.value ? myCard.value : null,
+    ignoreMyPlayerUpdates(() => {
+      newPlayers.forEach((id) => {
+        players.value.push({
+          id,
+          name: id === myId.value ? playerNameStore.playerName : 'New Player',
+          card: id === myId.value ? myCard.value : null,
+        });
       });
-    });
+    })
 
-    const somebodyJoined = newPlayers.length > 0;
+    const somebodyElseJoined = newPlayers.length > 0 && !newPlayers.includes(myId.value ?? '');
 
-    if (myPlayer.value && somebodyJoined) {
+    if (myPlayer.value && somebodyElseJoined) {
       // say hello to the new player
       channel.value?.push(ChannelEvent.PlayerUpdated, myPlayer.value);
     }
@@ -166,6 +168,10 @@ export const useGameStore = defineStore('game', (): {
     myId.value = joinPayload.player_id;
     myToken.value = joinPayload.token;
     joinedAt.value = joinPayload.joined_at;
+
+    if (myPlayer.value) {
+      channel.value?.push(ChannelEvent.PlayerUpdated, myPlayer.value);
+    }
   }
 
   function onPlayerUpdated(updatedPlayer: Player) {
