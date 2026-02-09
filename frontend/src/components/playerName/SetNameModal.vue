@@ -54,7 +54,7 @@ const setName = () => {
     </h1>
 
     <form
-      class="sm:flex sm:space-x-4 space-y-3 sm:space-y-0 sm:items-end"
+      class="flex sm:flex-row sm:space-x-4 gap-3 flex-col sm:items-end"
       @submit.prevent="setName"
     >
       <label class="flex-grow">
