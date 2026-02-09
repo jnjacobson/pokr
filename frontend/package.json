@@ -18,6 +18,7 @@
     "lottie-web-light": "1.1.0",
     "phoenix": "1.7.16",
     "pinia": "3.0.4",
+    "qrcode": "^1.5.4",
     "vue": "3.5.25",
     "vue-router": "5.0.1"
   },
@@ -26,6 +27,7 @@
     "@types/jsdom": "21.1.7",
     "@types/node": "22.12.0",
     "@types/phoenix": "1.6.5",
+    "@types/qrcode": "^1.5.6",
     "@typescript-eslint/eslint-plugin": "8.20.0",
     "@typescript-eslint/parser": "8.20.0",
     "@vitejs/plugin-vue": "6.0.4",
@@ -44,4 +46,3 @@
     "vue-tsc": "3.2.4"
   }
 }
-

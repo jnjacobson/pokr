@@ -4,9 +4,9 @@ import { onMounted, computed } from 'vue';
 import ChangeNameButton from '@/components/playerName/ChangeNameButton.vue';
 import CenterTable from '@/components/CenterTable.vue';
 import Confetti from '@/components/Confetti.vue';
-import CopyInviteLinkButton from '@/components/CopyInviteLinkButton.vue';
 import DarkModeSwitch from '@/components/darkMode/DarkModeSwitch.vue';
 import Deck from '@/components/Deck.vue';
+import ShareButton from '@/components/ShareButton.vue';
 import PlayerRow from '@/components/PlayerRow.vue';
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
 import SessionReplacedModal from '@/components/SessionReplacedModal.vue';
@@ -111,7 +111,7 @@ const oddPlayers = computed(() => (
     </Transition>
 
     <div class="absolute top-5 left-5 flex space-x-3">
-      <CopyInviteLinkButton />
+      <ShareButton />
       <ChangeNameButton />
     </div>
     <DarkModeSwitch class="absolute top-5 right-5" />
