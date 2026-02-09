@@ -39,6 +39,9 @@ export const useGameStore = defineStore('game', (): {
   const socket = ref<Socket>(new Socket(import.meta.env.VITE_BACKEND_WS_URL));
   const channel = ref<Channel>();
 
+  socket.value.onOpen(() => { isConnected.value = true; });
+  socket.value.onClose(() => { isConnected.value = false; });
+
   const {
     ignoreUpdates: ignoreMyPlayerUpdates,
   } = watchIgnorable([
@@ -79,10 +82,16 @@ export const useGameStore = defineStore('game', (): {
   }
 
   function joinGame(newGameId: string) {
+    if (channel.value) {
+      channel.value.leave();
+    }
+
+    players.value = [];
+
     socket.value.connect();
 
     if (!socket.value.isConnected) {
-      throw Error(`Couldn't connect to socket: ${socket.value.connectionState}`);
+      throw new Error(`Couldn't connect to socket: ${socket.value.connectionState}`);
     }
 
     channel.value = socket.value.channel(`game:${newGameId}`);
@@ -90,14 +99,17 @@ export const useGameStore = defineStore('game', (): {
       gameId.value = newGameId;
       deck.value = joinPayload.deck;
       areCardsRevealed.value = joinPayload.are_cards_revealed;
-      isConnected.value = true;
 
       myId.value = joinPayload.player_id;
-      players.value.push({
-        id: myId.value,
-        name: playerNameStore.playerName,
-        card: null,
-      });
+
+      // Ensure we don't add ourselves twice if the join event is received multiple times
+      if (!players.value.some(p => p.id === myId.value)) {
+        players.value.push({
+          id: myId.value,
+          name: playerNameStore.playerName,
+          card: null,
+        });
+      }
     });
     channel.value.on('player_joined', ({ id }) => {
       if (id === myId.value) {
