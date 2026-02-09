@@ -12,8 +12,9 @@ const noCardsChosen = computed(
   () => !gameStore.players.some((player: Player) => player.card !== null),
 );
 
-watch(() => gameStore.areCardsRevealed, (areCardsRevealed) => {
-  if (!areCardsRevealed) {
+watch(() => gameStore.areCardsRevealed, (areCardsRevealed, oldAreCardsRevealed) => {
+  const didJustJoin = oldAreCardsRevealed === undefined;
+  if (!areCardsRevealed || didJustJoin) {
     return;
   }
 

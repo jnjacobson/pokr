@@ -29,7 +29,7 @@ export const useGameStore = defineStore('game', (): {
 
   const gameId = ref<string>();
   const deck = ref<string[]>([]);
-  const areCardsRevealed = ref(false);
+  const areCardsRevealed = ref<boolean | undefined>(undefined);
   const isConnected = ref(false);
   const players = ref<Player[]>([]);
   const myId = ref<string>();
