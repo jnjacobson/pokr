@@ -17,5 +17,8 @@ if config_env() == :prod do
       scheme: "https"
     ],
     http: [ip: {0, 0, 0, 0}, port: 4000],
-    server: true
+    server: true,
+    check_origin:
+      (System.get_env("PHX_CHECK_ORIGIN") || "")
+      |> String.split(",", trim: true)
 end
