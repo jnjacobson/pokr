@@ -151,9 +151,9 @@ export const useGameStore = defineStore('game', (): {
       });
     });
 
-    const somebodyElseJoined = newPlayers.length > 0 && !newPlayers.includes(myId.value ?? '');
+    const somebodyJoined = newPlayers.length > 0;
 
-    if (myPlayer.value && somebodyElseJoined) {
+    if (myPlayer.value && somebodyJoined) {
       // say hello to the new player
       channel.value?.push(ChannelEvent.PlayerUpdated, myPlayer.value);
     }
