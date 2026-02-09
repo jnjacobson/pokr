@@ -102,14 +102,11 @@ export const useGameStore = defineStore('game', (): {
 
       myId.value = joinPayload.player_id;
 
-      // Ensure we don't add ourselves twice if the join event is received multiple times
-      if (!players.value.some(p => p.id === myId.value)) {
-        players.value.push({
-          id: myId.value,
-          name: playerNameStore.playerName,
-          card: null,
-        });
-      }
+      players.value.push({
+        id: myId.value,
+        name: playerNameStore.playerName,
+        card: null,
+      });
     });
     channel.value.on('player_joined', ({ id }) => {
       if (id === myId.value) {
