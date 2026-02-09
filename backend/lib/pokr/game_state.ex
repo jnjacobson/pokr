@@ -36,24 +36,8 @@ defmodule Pokr.GameState do
     Agent.get(__MODULE__, &Map.get(&1, game_id).deck)
   end
 
-  @spec increment_player_count(String.t()) :: :ok
-  def increment_player_count(game_id) do
-    Agent.update(__MODULE__, &update_in(&1, [game_id, Access.key(:player_count)], fn count -> count + 1 end))
-  end
-
-  @spec decrement_player_count(String.t()) :: :ok
-  def decrement_player_count(game_id) do
-    case has_players?(game_id) do
-      true ->
-        Agent.update(__MODULE__, &update_in(&1, [game_id, Access.key(:player_count)], fn count -> count - 1 end))
-
-      false ->
-        :error
-    end
-  end
-
   @spec has_players?(String.t()) :: boolean()
   def has_players?(game_id) do
-    Agent.get(__MODULE__, &Map.get(&1, game_id).player_count > 0)
+    PokrWeb.Presence.list("game:" <> game_id) != %{}
   end
 end

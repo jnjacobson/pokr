@@ -17,6 +17,8 @@ defmodule Pokr.Application do
       # Start the Endpoint (http/https)
       PokrWeb.Endpoint,
 
+      PokrWeb.Presence,
+
       Pokr.GameState,
     ]
 

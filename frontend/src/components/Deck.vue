@@ -11,21 +11,6 @@ const disabled = computed(() => gameStore.areCardsRevealed);
 const isCardSelected = (card: string) => (
   gameStore.myPlayer?.card === card
 );
-
-const selectCard = (card: string) => {
-  const { myPlayer } = gameStore;
-  if (myPlayer === undefined) {
-    throw new Error('Player not defined');
-  }
-
-  if (myPlayer.card === card) {
-    myPlayer.card = null;
-
-    return;
-  }
-
-  myPlayer.card = card;
-};
 </script>
 
 <template>
@@ -38,7 +23,7 @@ const selectCard = (card: string) => {
         :value="card"
         :disabled="disabled"
         :selected="isCardSelected(card)"
-        @click="!disabled && selectCard(card)"
+        @click="!disabled && gameStore.chooseCard(card)"
       />
     </li>
   </ol>

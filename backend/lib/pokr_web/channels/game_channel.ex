@@ -3,7 +3,6 @@ defmodule PokrWeb.GameChannel do
 
   def join("game:" <> game_id, _params, socket) do
     Pokr.GameState.create_game(game_id)
-    Pokr.GameState.increment_player_count(game_id)
 
     socket = assign(socket, :game_id, game_id)
 
@@ -13,11 +12,7 @@ defmodule PokrWeb.GameChannel do
   end
 
   def terminate(_reason, socket) do
-    Pokr.GameState.decrement_player_count(socket.assigns[:game_id])
-
-    if Pokr.GameState.has_players?(socket.assigns[:game_id]) do
-      broadcast!(socket, "player_left", %{id: socket.assigns[:id]})
-    else
+    if !Pokr.GameState.has_players?(socket.assigns[:game_id]) do
       Pokr.GameState.delete_game(socket.assigns[:game_id])
     end
 
@@ -25,18 +20,33 @@ defmodule PokrWeb.GameChannel do
   end
 
   def handle_info(:after_join, socket) do
-    push(socket, "join", %{
-      player_id: socket.assigns[:id],
-      are_cards_revealed: Pokr.GameState.get_are_cards_revealed?(socket.assigns[:game_id]),
-      deck: Pokr.GameState.get_deck(socket.assigns[:game_id])
+    presence_list = PokrWeb.Presence.list(socket)
+    player_id = socket.assigns[:id]
+    game_id = socket.assigns[:game_id]
+    join_timestamp = System.system_time(:millisecond)
+
+    if Map.has_key?(presence_list, player_id) do
+      # Player joined twice, notify the other tab to close.
+      PokrWeb.Endpoint.broadcast!("game:#{game_id}", "session_replaced", %{
+        player_id: player_id,
+        new_join_at: join_timestamp
+      })
+    end
+
+    {:ok, _} = PokrWeb.Presence.track(socket, player_id, %{
+      online_at: join_timestamp
     })
 
-    broadcast!(socket, "player_joined", %{id: socket.assigns[:id]})
+    push(socket, "presence_state", PokrWeb.Presence.list(socket))
 
-    {:noreply, socket}
-  end
+    push(socket, "join", %{
+      player_id: player_id,
+      token: Phoenix.Token.sign(PokrWeb.Endpoint, "player-token-salt", player_id),
+      joined_at: join_timestamp,
+      are_cards_revealed: Pokr.GameState.get_are_cards_revealed?(game_id),
+      deck: Pokr.GameState.get_deck(game_id)
+    })
 
-  def handle_in("player_joined", _params, socket) do
     {:noreply, socket}
   end
 

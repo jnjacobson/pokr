@@ -9,6 +9,7 @@ import DarkModeSwitch from '@/components/darkMode/DarkModeSwitch.vue';
 import Deck from '@/components/Deck.vue';
 import PlayerRow from '@/components/PlayerRow.vue';
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
+import SessionReplacedModal from '@/components/SessionReplacedModal.vue';
 import { useGameStore } from '@/stores/useGameStore';
 import { useCountdownStore } from '@/stores/useCountdownStore';
 import type { Player } from '@/types';
@@ -114,5 +115,7 @@ const oddPlayers = computed(() => (
       <ChangeNameButton />
     </div>
     <DarkModeSwitch class="absolute top-5 right-5" />
+
+    <SessionReplacedModal />
   </main>
 </template>

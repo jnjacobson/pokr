@@ -19,7 +19,7 @@ const countdownStore = useCountdownStore();
       v-for="player in players"
       :key="player.id"
       :player="player"
-      :card-revealed="gameStore.areCardsRevealed && !countdownStore.isRunning"
+      :card-revealed="(gameStore.areCardsRevealed ?? false) && !countdownStore.isRunning"
       :is-my-player="player.id === gameStore.myPlayer?.id"
     />
   </ul>
