@@ -78,6 +78,7 @@ export const useGameStore = defineStore('game', (): {
     presence.value = new Presence(channel.value);
 
     presence.value.onSync(onSync);
+    presence.value.onJoin(onPresenceJoin);
 
     channel.value.on(ChannelEvent.Join, onJoin);
     channel.value.on(ChannelEvent.PlayerUpdated, onPlayerUpdated);
@@ -108,22 +109,22 @@ export const useGameStore = defineStore('game', (): {
     myPlayer.value.name = player.name ?? myPlayer.value.name;
     myPlayer.value.card = player.card ?? myPlayer.value.card;
     myCard.value = player.card;
-    
+
     channel.value?.push(ChannelEvent.PlayerUpdated, myPlayer.value);
   }
 
   /** Callback functions for events */
 
   function onSync() {
-    const activeIds: string[] = [];
+    const activeIds = new Set<string>();
     presence.value?.list((id) => {
-      activeIds.push(id);
+      activeIds.add(id);
     });
 
     // Remove players that are no longer active
-    players.value = players.value.filter((player) => activeIds.includes(player.id));
+    players.value = players.value.filter((player) => activeIds.has(player.id));
 
-    const newPlayers = activeIds.filter((id) => !players.value.some((p) => p.id === id));
+    const newPlayers = Array.from(activeIds).filter((id) => !players.value.some((p) => p.id === id));
     newPlayers.forEach((id) => {
       players.value.push({
         id,
@@ -131,13 +132,6 @@ export const useGameStore = defineStore('game', (): {
         card: id === myId.value ? myCard.value : null,
       });
     });
-
-    const somebodyElseJoined = newPlayers.length > 0 && !newPlayers.includes(myId.value ?? '');
-
-    if (myPlayer.value && somebodyElseJoined) {
-      // say hello to the new player
-      channel.value?.push(ChannelEvent.PlayerUpdated, myPlayer.value);
-    }
   }
 
   function onJoin(joinPayload: JoinPayload & { joined_at: number }) {
@@ -148,9 +142,14 @@ export const useGameStore = defineStore('game', (): {
     myToken.value = joinPayload.token;
     joinedAt.value = joinPayload.joined_at;
 
-    if (myPlayer.value) {
-      channel.value?.push(ChannelEvent.PlayerUpdated, myPlayer.value);
+    if (myPlayer.value === undefined) {
+      return;
     }
+
+    myPlayer.value.name = playerNameStore.playerName;
+    myPlayer.value.card = myCard.value;
+
+    channel.value?.push(ChannelEvent.PlayerUpdated, myPlayer.value);
   }
 
   function onPlayerUpdated(updatedPlayer: Player) {
@@ -172,6 +171,14 @@ export const useGameStore = defineStore('game', (): {
 
   function onCardsRevealed() {
     areCardsRevealed.value = true;
+  }
+
+  function onPresenceJoin(id: string|undefined) {
+    if (id === myId.value || myPlayer.value === undefined) {
+      return;
+    }
+
+    channel.value?.push(ChannelEvent.PlayerUpdated, myPlayer.value);
   }
 
   function onCardsReset() {
