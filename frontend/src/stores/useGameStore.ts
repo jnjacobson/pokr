@@ -23,7 +23,7 @@ export const useGameStore = defineStore('game', (): {
   isSessionReplaced: Ref<boolean>,
 
   joinGame: (gameId: string) => void,
-  chooseCard: (card: string) => void,
+  chooseCard: (card: string | null) => void,
   revealCards: () => void,
   resetCards: () => void,
 } => {
@@ -107,8 +107,11 @@ export const useGameStore = defineStore('game', (): {
     }
 
     myPlayer.value.name = player.name ?? myPlayer.value.name;
-    myPlayer.value.card = player.card ?? myPlayer.value.card;
-    myCard.value = player.card;
+
+    if (player.card !== undefined) {
+      myPlayer.value.card = player.card;
+      myCard.value = player.card;
+    }
 
     channel.value?.push(ChannelEvent.PlayerUpdated, myPlayer.value);
   }

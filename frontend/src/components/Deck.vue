@@ -23,7 +23,7 @@ const isCardSelected = (card: string) => (
         :value="card"
         :disabled="disabled"
         :selected="isCardSelected(card)"
-        @click="!disabled && gameStore.chooseCard(card)"
+        @click="!disabled && gameStore.chooseCard(isCardSelected(card) ? null : card)"
       />
     </li>
   </ol>
