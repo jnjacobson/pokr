@@ -2,15 +2,16 @@
 import { ref, onMounted, watch } from 'vue';
 import { toDataURL } from 'qrcode';
 
+import BaseButton from '@/components/BaseButton.vue';
 import Modal from '@/components/Modal.vue';
 import { useGameStore } from '@/stores/useGameStore';
 import { useDarkModeStore } from '@/components/darkMode/useDarkModeStore';
-import CopyInviteLinkButton from '@/components/CopyInviteLinkButton.vue';
 
 const showModal = ref(false);
 const inviteUrl = ref('');
 const qrImageUrl = ref('');
 const isGenerating = ref(false);
+const showLinkCopySuccess = ref(false);
 
 const darkModeStore = useDarkModeStore();
 
@@ -44,6 +45,15 @@ onMounted(() => {
   inviteUrl.value = window.location.href;
 });
 
+const copyInviteLink = async () => {
+  await navigator.clipboard.writeText(inviteUrl.value);
+
+  showLinkCopySuccess.value = true;
+  setTimeout(() => {
+    showLinkCopySuccess.value = false;
+  }, 2000);
+};
+
 watch(showModal, (isOpen) => {
   if (isOpen) {
     void generateQrCode();
@@ -75,15 +85,20 @@ watch(showModal, (isOpen) => {
     </div>
 
     <template #actions>
-      <CopyInviteLinkButton />
+      <BaseButton
+        :variant="showLinkCopySuccess ? 'success' : 'primary'"
+        @click="!showLinkCopySuccess && copyInviteLink()"
+      >
+        Copy invite link
+
+        <template #success>
+          Link copied!
+        </template>
+      </BaseButton>
     </template>
   </Modal>
 
-  <button
-    class="py-2 px-4 rounded-md transition duration-75 font-semibold text-white dark:text-gray-900 bg-blue-600 hover:bg-blue-700 dark:bg-blue-200 dark:hover:bg-blue-300"
-    type="button"
-    @click="showModal = true"
-  >
+  <BaseButton @click="showModal = true">
     Share
-  </button>
+  </BaseButton>
 </template>

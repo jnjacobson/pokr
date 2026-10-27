@@ -15,7 +15,7 @@ withDefaults(defineProps<{
       'text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-gray-800': variant === 'secondary',
     }"
     class="
-      w-full py-2 px-4 rounded-md transition duration-75 font-semibold
+      py-2 px-4 rounded-md transition duration-75 font-semibold
       disabled:opacity-50 disabled:cursor-default
     "
     type="button"
