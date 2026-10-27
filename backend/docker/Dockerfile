@@ -1,4 +1,4 @@
-FROM elixir:1.12-alpine AS base
+FROM elixir:1.20-alpine AS base
 
 # development
 FROM base AS dev

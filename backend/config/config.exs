@@ -13,7 +13,7 @@ config :pokr,
 # Configures the endpoint
 config :pokr, PokrWeb.Endpoint,
   url: [host: "localhost"],
-  render_errors: [view: PokrWeb.ErrorView, accepts: ~w(json), layout: false],
+  render_errors: [formats: [json: PokrWeb.ErrorJSON], layout: false],
   pubsub_server: Pokr.PubSub,
   live_view: [signing_salt: "CfkMm5Wy"]
 
