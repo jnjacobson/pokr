@@ -34,7 +34,7 @@ export default [
     },
     rules: {
       // Vue rules
-      ...vue.configs['vue3-essential'].rules,
+      ...vue.configs.essential.rules,
       'vue/multi-word-component-names': 'off',
       'vue/max-len': ['error', {
         code: 120,

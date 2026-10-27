@@ -1,4 +1,4 @@
-FROM node:24.0.0-alpine AS base
+FROM node:24.22.1-alpine AS base
 
 # development
 FROM base as dev
