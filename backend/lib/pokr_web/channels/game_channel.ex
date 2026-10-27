@@ -37,9 +37,10 @@ defmodule PokrWeb.GameChannel do
       })
     end
 
-    {:ok, _} = PokrWeb.Presence.track(socket, player_id, %{
-      online_at: join_timestamp
-    })
+    {:ok, _} =
+      PokrWeb.Presence.track(socket, player_id, %{
+        online_at: join_timestamp
+      })
 
     push(socket, "presence_state", PokrWeb.Presence.list(socket))
 
