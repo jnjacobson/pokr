@@ -11,7 +11,9 @@ import { Channel, Socket, Presence } from 'phoenix';
 import { useLocalStorage, useSessionStorage } from '@vueuse/core';
 
 import { usePlayerNameStore } from '@/components/playerName/usePlayerNameStore';
-import type {JoinPayload, Player, SessionReplacedPayload } from '@/types';
+import type {
+  JoinErrorPayload, JoinPayload, Player, SessionReplacedPayload,
+} from '@/types';
 import { ChannelEvent } from '@/types';
 
 export const useGameStore = defineStore('game', (): {
@@ -22,6 +24,7 @@ export const useGameStore = defineStore('game', (): {
   myPlayer: ComputedRef<Player | undefined>,
   isConnected: Ref<boolean>,
   isSessionReplaced: Ref<boolean>,
+  isGameNotFound: Ref<boolean>,
 
   joinGame: (gameId: string) => void,
   chooseCard: (card: string | null) => void,
@@ -35,6 +38,7 @@ export const useGameStore = defineStore('game', (): {
   const areCardsRevealed = ref<boolean | undefined>(undefined);
   const isConnected = ref(false);
   const isSessionReplaced = ref(false);
+  const isGameNotFound = ref(false);
   const players = ref<Player[]>([]);
   const myId = useLocalStorage<string | undefined>('playerId', undefined);
   const myToken = useLocalStorage<string | undefined>('playerToken', undefined);
@@ -88,7 +92,7 @@ export const useGameStore = defineStore('game', (): {
     channel.value.on(ChannelEvent.CardsReset, onCardsReset);
     channel.value.on(ChannelEvent.SessionReplaced, onSessionReplaced);
 
-    channel.value.join();
+    channel.value.join().receive('error', onJoinError);
   }
 
   function revealCards() {
@@ -195,6 +199,16 @@ export const useGameStore = defineStore('game', (): {
     });
   }
 
+  function onJoinError({ reason }: JoinErrorPayload) {
+    // Other errors, like an unreachable database, are worth retrying: phoenix rejoins by itself.
+    if (reason !== 'game_not_found') {
+      return;
+    }
+
+    channel.value?.leave();
+    isGameNotFound.value = true;
+  }
+
   function onSessionReplaced({ player_id, new_join_at }: SessionReplacedPayload) {
     if (player_id === myId.value && new_join_at > joinedAt.value && joinedAt.value !== 0) {
       // This is an older tab, the session has been replaced by a newer one.
@@ -211,6 +225,7 @@ export const useGameStore = defineStore('game', (): {
     myPlayer,
     isConnected,
     isSessionReplaced,
+    isGameNotFound,
 
     joinGame,
     chooseCard,

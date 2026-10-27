@@ -1,11 +1,12 @@
 defmodule PokrWeb.GameControllerTest do
   use PokrWeb.ConnCase, async: true
 
-  test "POST /api/games returns a three word slug", %{conn: conn} do
+  test "POST /api/games creates a game and returns its three word slug", %{conn: conn} do
     conn = post(conn, "/api/games")
 
     assert %{"id" => id} = json_response(conn, 200)
     assert id =~ ~r/^[a-z]+(-[a-z]+){2}$/
+    assert Pokr.Games.get_game(id)
   end
 
   test "POST /api/games returns a new id every time", %{conn: conn} do

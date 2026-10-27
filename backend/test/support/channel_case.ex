@@ -20,6 +20,4 @@ defmodule PokrWeb.ChannelCase do
     Pokr.DataCase.setup_sandbox(tags)
     :ok
   end
-
-  def unique_game_id, do: "test-" <> Integer.to_string(System.unique_integer([:positive]))
 end

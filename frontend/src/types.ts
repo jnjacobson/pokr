@@ -15,6 +15,10 @@ export type JoinPayload = {
   are_cards_revealed: boolean;
 };
 
+export type JoinErrorPayload = {
+  reason: string;
+};
+
 export type SessionReplacedPayload = {
   player_id: string;
   new_join_at: number;
