@@ -18,5 +18,4 @@ pnpm-debug.log*
 
 # origin IP behind Cloudflare
 .ssh_config
-.zed/
 .DS_Store
