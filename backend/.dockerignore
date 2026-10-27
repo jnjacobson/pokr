@@ -1,0 +1,7 @@
+.env
+.env.*
+!.env.dist
+deps
+_build
+*.tar
+.git
