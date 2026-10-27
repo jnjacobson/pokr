@@ -10,8 +10,8 @@
     "test:unit": "vitest run",
     "build-only": "vite build",
     "tsc": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
-    "lint": "eslint src/**/*.{ts,vue}",
-    "lint:fix": "eslint --fix src/**/*.{ts,vue}"
+    "lint": "eslint 'src/**/*.{ts,vue}'",
+    "lint:fix": "eslint --fix 'src/**/*.{ts,vue}'"
   },
   "dependencies": {
     "@vueuse/core": "15.0.0",
