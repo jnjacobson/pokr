@@ -25,4 +25,4 @@ RUN mix deps.get --only prod
 
 RUN MIX_ENV=prod mix compile
 
-CMD env MIX_ENV=prod mix phx.server
+CMD ["env", "MIX_ENV=prod", "mix", "phx.server"]
