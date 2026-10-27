@@ -25,7 +25,7 @@ docker compose up         # frontend :5173, backend :4000, postgres :5432
 | Frontend | Cloudflare Pages `pokr`  | Push to `main`. Cloudflare builds and deploys by itself.  |
 | Backend  | Oracle Cloud VM, Docker  | Build image tar, copy to server, update stack in Portainer. See [backend/README.md](backend/README.md). |
 
-There is no CI in GitHub; all deploys are triggered from Cloudflare or by hand.
+GitHub Actions (`.github/workflows/ci.yml`) runs lint, type check, tests and build for the frontend and format, compile and tests for the backend on every PR and push to `main`. It does not deploy; deploys are triggered from Cloudflare or by hand.
 
 ## Infrastructure
 
