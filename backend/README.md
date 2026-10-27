@@ -20,6 +20,10 @@ To rotate `SECRET_KEY_BASE`: generate a value (`mix phx.gen.secret` or `openssl 
 
 The server is an x86_64 Oracle Cloud VM; see the [root README](../README.md#infrastructure).
 
+On every push to `main`, CI builds the image and pushes it to the public package `ghcr.io/jnjacobson/pokr-backend` (tags `latest` and the commit SHA). Only CI pushes there: the image is public, and `.dockerignore` keeps `.env` out of it. Never push a locally built image.
+
+Until the `pokr-backend` stack uses that image, deploy the old way:
+
 1. Run `make build-tar` or `make build-tar-remote` to build the Docker image tar. Use `build-tar-remote` on Apple Silicon: it builds on the server over SSH with buildx (`amd64builder`).
 2. Run `make copy-tar` to copy the tar to the server and `docker load` it there.
 3. In Portainer:
