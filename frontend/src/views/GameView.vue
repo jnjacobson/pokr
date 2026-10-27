@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
 
-import ChangeNameButton from '@/components/playerName/ChangeNameButton.vue';
+import PlayerSettingsButton from '@/components/playerSettings/PlayerSettingsButton.vue';
 import CenterTable from '@/components/CenterTable.vue';
 import Confetti from '@/components/Confetti.vue';
 import DarkModeSwitch from '@/components/darkMode/DarkModeSwitch.vue';
@@ -96,11 +96,20 @@ const oddPlayers = computed(() => (
             leave-to-class="opacity-0"
           >
             <div v-if="!gameStore.areCardsRevealed">
-              <p class="mb-7 leading-none">
-                Choose your card &#128071;
+              <p
+                v-if="gameStore.myPlayer?.isSpectator"
+                class="leading-none"
+              >
+                You're spectating &#128064;
               </p>
 
-              <Deck />
+              <template v-else>
+                <p class="mb-7 leading-none">
+                  Choose your card &#128071;
+                </p>
+
+                <Deck />
+              </template>
             </div>
 
             <Result
@@ -113,7 +122,7 @@ const oddPlayers = computed(() => (
 
     <div class="absolute top-5 left-5 flex space-x-3">
       <ShareButton />
-      <ChangeNameButton />
+      <PlayerSettingsButton />
     </div>
     <DarkModeSwitch class="absolute top-5 right-5" />
 

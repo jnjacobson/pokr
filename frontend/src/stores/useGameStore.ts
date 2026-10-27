@@ -10,7 +10,7 @@ import {
 import { Channel, Socket, Presence } from 'phoenix';
 import { useLocalStorage, useSessionStorage } from '@vueuse/core';
 
-import { usePlayerNameStore } from '@/components/playerName/usePlayerNameStore';
+import { usePlayerSettingsStore } from '@/components/playerSettings/usePlayerSettingsStore';
 import type {
   JoinErrorPayload, JoinPayload, Player, SessionReplacedPayload,
 } from '@/types';
@@ -31,7 +31,7 @@ export const useGameStore = defineStore('game', (): {
   revealCards: () => void,
   resetCards: () => void,
 } => {
-  const playerNameStore = usePlayerNameStore();
+  const playerSettingsStore = usePlayerSettingsStore();
 
   const gameId = ref<string>();
   const deck = ref<string[]>([]);
@@ -61,9 +61,12 @@ export const useGameStore = defineStore('game', (): {
   socket.value.onOpen(() => { isConnected.value = true; });
   socket.value.onClose(() => { isConnected.value = false; });
 
-  watch(() => playerNameStore.playerName, (newName) => {
-    updateMyPlayer({ name: newName });
-  });
+  watch(
+    () => [playerSettingsStore.playerName, playerSettingsStore.isSpectator] as const,
+    ([newName, isSpectator]) => {
+      updateMyPlayer({ name: newName, isSpectator });
+    },
+  );
 
   function joinGame(newGameId: string) {
     if (channel.value) {
@@ -113,13 +116,24 @@ export const useGameStore = defineStore('game', (): {
     }
 
     myPlayer.value.name = player.name ?? myPlayer.value.name;
+    myPlayer.value.isSpectator = player.isSpectator ?? myPlayer.value.isSpectator;
 
-    if (player.card !== undefined) {
-      myPlayer.value.card = player.card;
-      myCard.value = player.card;
+    // A spectator never holds a vote.
+    const card = myPlayer.value.isSpectator ? null : player.card;
+
+    if (card !== undefined) {
+      myPlayer.value.card = card;
+      myCard.value = card;
     }
 
     channel.value?.push(ChannelEvent.PlayerUpdated, myPlayer.value);
+  }
+
+  /** My name, role and card as kept on this device. A spectator never holds a vote. */
+  function myLocalPlayer(): Omit<Player, 'id'> {
+    const { playerName, isSpectator } = playerSettingsStore;
+
+    return { name: playerName, isSpectator, card: isSpectator ? null : myCard.value };
   }
 
   /** Callback functions for events */
@@ -135,11 +149,13 @@ export const useGameStore = defineStore('game', (): {
 
     const newPlayers = Array.from(activeIds).filter((id) => !players.value.some((p) => p.id === id));
     newPlayers.forEach((id) => {
-      players.value.push({
-        id,
-        name: id === myId.value ? playerNameStore.playerName : 'New Player',
-        card: id === myId.value ? myCard.value : null,
-      });
+      players.value.push(
+        id === myId.value
+          ? { id, ...myLocalPlayer() }
+          : {
+            id, name: 'New Player', card: null, isSpectator: false,
+          },
+      );
     });
   }
 
@@ -155,8 +171,7 @@ export const useGameStore = defineStore('game', (): {
       return;
     }
 
-    myPlayer.value.name = playerNameStore.playerName;
-    myPlayer.value.card = myCard.value;
+    Object.assign(myPlayer.value, myLocalPlayer());
 
     channel.value?.push(ChannelEvent.PlayerUpdated, myPlayer.value);
   }

@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import EyeIcon from '@/components/EyeIcon.vue';
+
 defineProps<{
   value: string | null,
   revealed: boolean,
+  spectating?: boolean,
 }>();
 </script>
 
@@ -11,7 +14,21 @@ defineProps<{
     style="perspective: 20rem;"
   >
     <div
-      v-if="value === null"
+      v-if="spectating"
+      class="
+        rounded-md w-full h-full flex items-center justify-center
+        bg-gray-300 dark:bg-gray-800 text-gray-500 dark:text-gray-400
+      "
+      title="Spectating"
+    >
+      <EyeIcon
+        class="w-6 h-6"
+        aria-label="Spectating"
+      />
+    </div>
+
+    <div
+      v-else-if="value === null"
       class="rounded-md w-full h-full bg-gray-200 dark:bg-gray-700"
     />
 

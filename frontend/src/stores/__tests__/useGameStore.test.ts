@@ -8,6 +8,7 @@ import {
   vi,
 } from 'vitest';
 
+import { usePlayerSettingsStore } from '@/components/playerSettings/usePlayerSettingsStore';
 import { useGameStore } from '@/stores/useGameStore';
 import { FakePhoenixServer } from '@/test/FakePhoenixServer';
 import { ChannelEvent } from '@/types';
@@ -79,7 +80,7 @@ describe('useGameStore', () => {
       await vi.waitFor(() => expect(server.received).toContainEqual({
         topic: TOPIC,
         event: ChannelEvent.PlayerUpdated,
-        payload: { id: ME, name: 'New Player', card: null },
+        payload: { id: ME, name: 'New Player', card: null, isSpectator: false },
       }));
     });
   });
@@ -150,7 +151,7 @@ describe('useGameStore', () => {
       await vi.waitFor(() => expect(server.received).toContainEqual({
         topic: TOPIC,
         event: ChannelEvent.PlayerUpdated,
-        payload: { id: ME, name: 'New Player', card: '5' },
+        payload: { id: ME, name: 'New Player', card: '5', isSpectator: false },
       }));
     });
 
@@ -175,6 +176,70 @@ describe('useGameStore', () => {
 
       await vi.waitFor(() => expect(store.areCardsRevealed).toBe(false));
       expect(store.players.map(({ card }) => card)).toEqual([null, null]);
+    });
+  });
+
+  describe('spectators', () => {
+    it('shows another player as a spectator when they say so', async () => {
+      const store = await joinGame();
+
+      server.push(ChannelEvent.PlayerUpdated, {
+        id: OTHER, name: 'Pat', card: null, isSpectator: true,
+      });
+
+      await vi.waitFor(() => expect(store.players.find(({ id }) => id === OTHER))
+        .toMatchObject({ name: 'Pat', isSpectator: true }));
+    });
+
+    it('joins as a spectator when I chose to be one', async () => {
+      localStorage.setItem('isSpectator', 'true');
+
+      const store = await joinGame();
+
+      expect(store.myPlayer?.isSpectator).toBe(true);
+      await vi.waitFor(() => expect(server.received).toContainEqual({
+        topic: TOPIC,
+        event: ChannelEvent.PlayerUpdated,
+        payload: { id: ME, name: 'New Player', card: null, isSpectator: true },
+      }));
+    });
+
+    it('drops my card when I become a spectator and starts clean when I return', async () => {
+      const store = await joinGame();
+      const playerSettingsStore = usePlayerSettingsStore();
+
+      store.chooseCard('5');
+      playerSettingsStore.isSpectator = true;
+
+      await vi.waitFor(() => expect(server.received).toContainEqual({
+        topic: TOPIC,
+        event: ChannelEvent.PlayerUpdated,
+        payload: { id: ME, name: 'New Player', card: null, isSpectator: true },
+      }));
+      expect(store.myPlayer).toMatchObject({ card: null, isSpectator: true });
+
+      playerSettingsStore.isSpectator = false;
+
+      await vi.waitFor(() => expect(store.myPlayer?.isSpectator).toBe(false));
+      expect(store.myPlayer?.card).toBeNull();
+    });
+
+    it('cannot choose a card while spectating', async () => {
+      localStorage.setItem('isSpectator', 'true');
+      const store = await joinGame();
+
+      store.chooseCard('5');
+
+      expect(store.myPlayer?.card).toBeNull();
+    });
+
+    it('can still reveal the cards', async () => {
+      localStorage.setItem('isSpectator', 'true');
+      const store = await joinGame();
+
+      store.revealCards();
+
+      await vi.waitFor(() => expect(store.areCardsRevealed).toBe(true));
     });
   });
 
