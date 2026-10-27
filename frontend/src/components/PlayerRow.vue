@@ -20,7 +20,7 @@ const countdownStore = useCountdownStore();
       :key="player.id"
       :player="player"
       :card-revealed="(gameStore.areCardsRevealed ?? false) && !countdownStore.isRunning"
-      :is-my-player="player.id === gameStore.myPlayer?.id"
+      :own="player.id === gameStore.myPlayer?.id"
     />
   </ul>
 </template>

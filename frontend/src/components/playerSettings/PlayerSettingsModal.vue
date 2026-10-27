@@ -6,27 +6,30 @@ import {
   watch,
 } from 'vue';
 
+import { usePlayerSettingsStore } from './usePlayerSettingsStore';
+
 import Modal from '@/components/Modal.vue';
+import ToggleSwitch from '@/components/ToggleSwitch.vue';
 
 const props = defineProps<{
-  modelValue: string,
   show: boolean,
 }>();
 
-const emit = defineEmits<{
-  (event: 'update:modelValue', value: string): void,
-  (event: 'close'): void,
-}>();
+const emit = defineEmits<{ (event: 'close'): void }>();
 
-const newPlayerName = ref(props.modelValue);
+const playerSettingsStore = usePlayerSettingsStore();
+
+const newPlayerName = ref(playerSettingsStore.playerName);
+const newSpectating = ref(playerSettingsStore.isSpectator);
 const nameInput = ref<HTMLInputElement | null>(null);
 
-const isNameValid = computed(
+const isNameInvalid = computed(
   () => newPlayerName.value.length === 0 || newPlayerName.value.length > 24,
 );
 
 watch(() => props.show, () => {
-  newPlayerName.value = props.modelValue;
+  newPlayerName.value = playerSettingsStore.playerName;
+  newSpectating.value = playerSettingsStore.isSpectator;
 
   void nextTick(() => {
     nameInput.value?.focus();
@@ -34,30 +37,36 @@ watch(() => props.show, () => {
   });
 });
 
-const setName = () => {
-  if (isNameValid.value) {
+const close = () => {
+  playerSettingsStore.hasSeenSpectatorOption = true;
+  emit('close');
+};
+
+const submit = () => {
+  if (isNameInvalid.value) {
     return;
   }
 
-  emit('update:modelValue', newPlayerName.value);
-  emit('close');
+  playerSettingsStore.playerName = newPlayerName.value;
+  playerSettingsStore.isSpectator = newSpectating.value;
+  close();
 };
 </script>
 
 <template>
   <Modal
     :show="show"
-    @close="emit('close')"
+    @close="close"
   >
     <h1 class="text-xl font-medium mb-5">
       Hello there! &#128075;
     </h1>
 
     <form
-      class="flex sm:flex-row sm:space-x-4 gap-3 flex-col sm:items-end"
-      @submit.prevent="setName"
+      class="flex flex-col gap-4"
+      @submit.prevent="submit"
     >
-      <label class="flex-grow">
+      <label>
         What's your name?
 
         <input
@@ -76,15 +85,23 @@ const setName = () => {
         />
       </label>
 
+      <ToggleSwitch v-model="newSpectating">
+        Just watching?
+
+        <template #description>
+          Spectators don't vote, but can still show the cards.
+        </template>
+      </ToggleSwitch>
+
       <button
         :class="{
-          'opacity-50 cursor-default': isNameValid,
-          'hover:bg-blue-700 dark:hover:bg-blue-300': !isNameValid,
+          'opacity-50 cursor-default': isNameInvalid,
+          'hover:bg-blue-700 dark:hover:bg-blue-300': !isNameInvalid,
         }"
         class="
           py-2 px-4 rounded-md shrink-0 bg-blue-600
           dark:bg-blue-200 transition font-semibold
-          text-white dark:text-gray-900 w-full sm:w-auto
+          text-white dark:text-gray-900 w-full
         "
         type="submit"
       >

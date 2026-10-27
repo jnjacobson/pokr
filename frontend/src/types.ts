@@ -2,6 +2,7 @@ export type Player = {
   id: string;
   name: string;
   card: string | null;
+  isSpectator: boolean;
 };
 
 export type Game = {

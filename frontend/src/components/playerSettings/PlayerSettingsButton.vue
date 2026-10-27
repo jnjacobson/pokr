@@ -1,27 +1,27 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 
-import SetNameModal from './SetNameModal.vue';
-import { usePlayerNameStore } from './usePlayerNameStore';
+import PlayerSettingsModal from './PlayerSettingsModal.vue';
+import { usePlayerSettingsStore } from './usePlayerSettingsStore';
 
 import { useGameStore } from '@/stores/useGameStore';
 
-const playerNameStore = usePlayerNameStore();
+const playerSettingsStore = usePlayerSettingsStore();
 
 const gameStore = useGameStore();
 
 const showModal = ref(false);
 
 onMounted(() => {
-  if (playerNameStore.playerName === 'New Player') {
+  // Everyone sees the modal once more, so that existing players learn about the spectator option.
+  if (playerSettingsStore.playerName === 'New Player' || !playerSettingsStore.hasSeenSpectatorOption) {
     showModal.value = true;
   }
 });
 </script>
 
 <template>
-  <SetNameModal
-    v-model="playerNameStore.playerName"
+  <PlayerSettingsModal
     :show="showModal"
     @close="showModal = false"
   />
