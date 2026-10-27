@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   frontend:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     defaults:
       run:
         working-directory: frontend
@@ -32,7 +32,7 @@ jobs:
       - run: npm run build-only
 
   backend:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     defaults:
       run:
         working-directory: backend
@@ -72,7 +72,7 @@ jobs:
   publish-backend:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: backend
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write
