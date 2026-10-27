@@ -1,23 +1,18 @@
 defmodule PokrWeb.GameChannel do
   use Phoenix.Channel
 
-  @game_id_format ~r/\A[a-z0-9-]{1,64}\z/
-
   def join("game:" <> game_id, _params, socket) do
-    with :ok <- validate_game_id(game_id),
-         {:ok, game} <- Pokr.Games.join_game(game_id) do
-      socket = assign(socket, :game_id, game_id)
+    case Pokr.Games.join_game(game_id) do
+      {:ok, game} ->
+        socket = assign(socket, :game_id, game_id)
 
-      send(self(), {:after_join, game})
+        send(self(), {:after_join, game})
 
-      {:ok, socket}
-    else
-      {:error, reason} -> {:error, %{reason: reason}}
+        {:ok, socket}
+
+      {:error, reason} ->
+        {:error, %{reason: reason}}
     end
-  end
-
-  defp validate_game_id(game_id) do
-    if Regex.match?(@game_id_format, game_id), do: :ok, else: {:error, :invalid_game_id}
   end
 
   def handle_info({:after_join, game}, socket) do

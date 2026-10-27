@@ -4,7 +4,8 @@ defmodule PokrWeb.GameChannelTest do
   alias Pokr.Games
 
   setup do
-    {:ok, game_id: unique_game_id()}
+    {:ok, game} = Games.create_game()
+    {:ok, game_id: game.id}
   end
 
   defp join_as(player_id, game_id) do
@@ -32,10 +33,9 @@ defmodule PokrWeb.GameChannelTest do
     assert deck == ~w(0 ½ 1 2 3 5 8 13 20 40 100 ? ☕)
   end
 
-  test "joining creates the game, a second join reuses it", %{game_id: game_id} do
+  test "a second player joins the same game and sees its state", %{game_id: game_id} do
     join_as("p1", game_id)
     assert_push "join", %{are_cards_revealed: false}
-    assert Games.get_game(game_id)
 
     Games.set_are_cards_revealed(game_id, true)
 
@@ -84,15 +84,13 @@ defmodule PokrWeb.GameChannelTest do
     assert_push "join", %{player_id: "p2", are_cards_revealed: true}
   end
 
-  test "joining a game with an invalid id is refused" do
-    for invalid <- ["", "UPPER", "with space", "ünicode", String.duplicate("a", 65)] do
-      assert {:error, %{reason: :invalid_game_id}} =
-               PokrWeb.Socket
-               |> socket("socket:p1", %{id: "p1"})
-               |> subscribe_and_join(PokrWeb.GameChannel, "game:" <> invalid)
-    end
+  test "joining a game that was never created is refused" do
+    assert {:error, %{reason: :game_not_found}} =
+             PokrWeb.Socket
+             |> socket("socket:p1", %{id: "p1"})
+             |> subscribe_and_join(PokrWeb.GameChannel, "game:sdfg")
 
-    assert Pokr.Repo.aggregate(Pokr.Game, :count) == 0
+    refute Games.get_game("sdfg")
   end
 
   defp close_and_wait(socket) do
