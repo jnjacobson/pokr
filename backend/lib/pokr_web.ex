@@ -1,14 +1,13 @@
 defmodule PokrWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
-  as controllers, views, channels and so on.
+  as controllers, channels and so on.
 
   This can be used in your application as:
 
       use PokrWeb, :controller
-      use PokrWeb, :view
 
-  The definitions below will be executed for every view,
+  The definitions below will be executed for every
   controller, etc, so keep them short and clean, focused
   on imports, uses and aliases.
 
@@ -19,26 +18,11 @@ defmodule PokrWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: PokrWeb
+      use Phoenix.Controller, formats: [:json]
 
       import Plug.Conn
-      import PokrWeb.Gettext
+      use Gettext, backend: PokrWeb.Gettext
       alias PokrWeb.Router.Helpers, as: Routes
-    end
-  end
-
-  def view do
-    quote do
-      use Phoenix.View,
-        root: "lib/pokr_web/templates",
-        namespace: PokrWeb
-
-      # Import convenience functions from controllers
-      import Phoenix.Controller,
-        only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
-
-      # Include shared imports and aliases for views
-      unquote(view_helpers())
     end
   end
 
@@ -54,23 +38,12 @@ defmodule PokrWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import PokrWeb.Gettext
-    end
-  end
-
-  defp view_helpers do
-    quote do
-      # Import basic rendering functionality (render, render_layout, etc)
-      import Phoenix.View
-
-      import PokrWeb.ErrorHelpers
-      import PokrWeb.Gettext
-      alias PokrWeb.Router.Helpers, as: Routes
+      use Gettext, backend: PokrWeb.Gettext
     end
   end
 
   @doc """
-  When used, dispatch to the appropriate controller/view/etc.
+  When used, dispatch to the appropriate controller/channel/etc.
   """
   defmacro __using__(which) when is_atom(which) do
     apply(__MODULE__, which, [])

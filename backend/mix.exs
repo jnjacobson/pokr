@@ -5,12 +5,13 @@ defmodule Pokr.MixProject do
     [
       app: :pokr,
       version: "0.1.0",
-      elixir: "~> 1.12",
+      elixir: "~> 1.15",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      listeners: [Phoenix.CodeReloader]
     ]
   end
 
@@ -33,18 +34,17 @@ defmodule Pokr.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.6.12"},
-      {:phoenix_ecto, "~> 4.4"},
-      {:ecto_sql, "~> 3.6"},
-      {:postgrex, ">= 0.0.0"},
-      {:phoenix_live_dashboard, "~> 0.6"},
-      {:telemetry_metrics, "~> 0.6"},
-      {:telemetry_poller, "~> 1.0"},
-      {:gettext, "~> 0.18"},
-      {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"},
+      {:phoenix, "~> 1.8.0"},
+      {:phoenix_ecto, "~> 4.7"},
+      {:ecto_sql, "~> 3.14"},
+      {:postgrex, "~> 0.22"},
+      {:phoenix_live_dashboard, "~> 0.9"},
+      {:telemetry_metrics, "~> 1.1"},
+      {:telemetry_poller, "~> 1.3"},
+      {:gettext, "~> 1.0"},
+      {:jason, "~> 1.4"},
+      {:plug_cowboy, "~> 2.8"},
       {:mnemonic_slugs, "~> 0.0.3"},
-      {:uuid, "~> 1.1"},
       {:cors_plug, "~> 3.0"},
     ]
   end

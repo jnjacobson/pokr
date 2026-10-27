@@ -12,6 +12,10 @@ defmodule PokrWeb.GameChannel do
   end
 
   def terminate(_reason, socket) do
+    # The presence tracker only drops this channel after the process is gone,
+    # so untrack it here or it still counts as a player below.
+    PokrWeb.Presence.untrack(socket, socket.assigns[:id])
+
     if !Pokr.GameState.has_players?(socket.assigns[:game_id]) do
       Pokr.GameState.delete_game(socket.assigns[:game_id])
     end

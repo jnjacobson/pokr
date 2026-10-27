@@ -1,6 +1,6 @@
 # Pokr Backend
 
-Phoenix 1.6 (Elixir 1.12) API and websocket for pokr. Game state lives in memory (`lib/pokr/game_state.ex`); Postgres is part of the stack.
+Phoenix 1.8 (Elixir 1.20) API and websocket for pokr. Game state lives in memory (`lib/pokr/game_state.ex`); Postgres is part of the stack.
 
 ## Development
 
