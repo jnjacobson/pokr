@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 
+import CloseIcon from '@/components/icons/CloseIcon.vue';
+
 const props = defineProps<{
   show: boolean,
+  closable?: boolean,
 }>();
 
 const emit = defineEmits<{ (event: 'close'): void,
@@ -92,7 +95,27 @@ watch(() => props.show, (show) => {
             role="dialog"
             aria-modal="true"
           >
+            <button
+              v-if="closable"
+              class="
+                absolute top-3 right-3 p-1.5 rounded-md transition duration-75
+                text-gray-500 dark:text-gray-400 hover:bg-blue-200 dark:hover:bg-gray-800
+              "
+              type="button"
+              aria-label="Close"
+              @click="emit('close')"
+            >
+              <CloseIcon class="w-5 h-5" />
+            </button>
+
             <slot />
+
+            <div
+              v-if="$slots.actions"
+              class="mt-5 flex flex-col gap-2"
+            >
+              <slot name="actions" />
+            </div>
           </div>
         </transition>
       </div>

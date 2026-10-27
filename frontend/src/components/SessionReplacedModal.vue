@@ -11,14 +11,14 @@ const gameStore = useGameStore();
       Hello again!
     </h1>
 
-    <div class="space-y-4">
-      <p>
-        You have joined this game in another tab or window. This connection has been closed to prevent conflicts.
-      </p>
+    <p>
+      You have joined this game in another tab or window. This connection has been closed to prevent conflicts.
+    </p>
 
-      <p class="text-gray-600 dark:text-gray-400">
+    <template #actions>
+      <p class="text-center text-gray-600 dark:text-gray-400">
         You can close this tab now.
       </p>
-    </div>
+    </template>
   </Modal>
 </template>

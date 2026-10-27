@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import ModalButton from '@/components/ModalButton.vue';
+
 const showLinkCopySuccess = ref(false);
 
 const copyInviteLink = async () => {
@@ -14,15 +16,14 @@ const copyInviteLink = async () => {
 </script>
 
 <template>
-  <button
-    :class="{
-      'bg-blue-600 dark:bg-blue-200 dark:hover:bg-blue-300 hover:bg-blue-700': !showLinkCopySuccess,
-      'bg-green-600 dark:bg-green-300 cursor-default': showLinkCopySuccess,
-    }"
-    class="py-2 rounded-md transition duration-75 font-semibold text-white dark:text-gray-900"
-    type="button"
-    style="width: 144px"
+  <ModalButton
+    :variant="showLinkCopySuccess ? 'success' : 'primary'"
     @click="!showLinkCopySuccess && copyInviteLink()"
-    v-text="showLinkCopySuccess ? 'Link copied!' : 'Copy invite link'"
-  />
+  >
+    Copy invite link
+
+    <template #success>
+      Link copied!
+    </template>
+  </ModalButton>
 </template>

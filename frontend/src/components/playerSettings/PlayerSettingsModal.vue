@@ -9,6 +9,7 @@ import {
 import { usePlayerSettingsStore } from './usePlayerSettingsStore';
 
 import Modal from '@/components/Modal.vue';
+import ModalButton from '@/components/ModalButton.vue';
 import ToggleSwitch from '@/components/ToggleSwitch.vue';
 
 const props = defineProps<{
@@ -56,6 +57,7 @@ const submit = () => {
 <template>
   <Modal
     :show="show"
+    closable
     @close="close"
   >
     <h1 class="text-xl font-medium mb-5">
@@ -63,6 +65,7 @@ const submit = () => {
     </h1>
 
     <form
+      id="player-settings"
       class="flex flex-col gap-4"
       @submit.prevent="submit"
     >
@@ -92,21 +95,16 @@ const submit = () => {
           Spectators don't vote, but can still show the cards.
         </template>
       </ToggleSwitch>
+    </form>
 
-      <button
-        :class="{
-          'opacity-50 cursor-default': isNameInvalid,
-          'hover:bg-blue-700 dark:hover:bg-blue-300': !isNameInvalid,
-        }"
-        class="
-          py-2 px-4 rounded-md shrink-0 bg-blue-600
-          dark:bg-blue-200 transition font-semibold
-          text-white dark:text-gray-900 w-full
-        "
+    <template #actions>
+      <ModalButton
+        :disabled="isNameInvalid"
+        form="player-settings"
         type="submit"
       >
         Let's go!
-      </button>
-    </form>
+      </ModalButton>
+    </template>
   </Modal>
 </template>
