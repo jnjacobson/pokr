@@ -18,6 +18,8 @@ To rotate `SECRET_KEY_BASE`: generate a value (`mix phx.gen.secret` or `openssl 
 
 The server is an x86_64 Oracle Cloud VM; see the [root README](../README.md#infrastructure).
 
-On every push to `main`, CI builds the image and pushes it to the public package `ghcr.io/jnjacobson/pokr-backend` (tags `latest` and the commit SHA). Only CI pushes there: the image is public, and `.dockerignore` keeps `.env` out of it. Never push a locally built image.
+When a push to `main` changes anything under `backend/`, CI builds the image and pushes it to the public package `ghcr.io/jnjacobson/pokr-backend` (tags `latest` and the commit SHA). Only CI pushes there: the image is public, and `.dockerignore` keeps `.env` out of it. Never push a locally built image.
 
-To deploy, open Stacks -> pokr-backend -> Editor in Portainer, enable "Re-pull image and redeploy" and click "Update the stack". The stack uses `ghcr.io/jnjacobson/pokr-backend:latest`; for a rollback, pin the image to an older commit SHA tag.
+When a push to `main` changes anything under `backend/`, CI publishes the image and then the `deploy-backend` job redeploys the `pokr-backend` stack (image `ghcr.io/jnjacobson/pokr-backend:latest`) through the Portainer API: it sends back the stack's current file and env with a re-pull of the images. It needs the repository secret `PORTAINER_TOKEN`, a Portainer access token (My account -> Access tokens). Each deploy recreates the containers and drops running games.
+
+To deploy by hand, open Stacks -> pokr-backend -> Editor in Portainer, enable "Re-pull image and redeploy" and click "Update the stack". For a rollback, pin the stack's image to an older commit SHA tag.
