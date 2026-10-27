@@ -10,19 +10,33 @@ USER $USER_ID:$GROUP_ID
 RUN mix local.hex --force && mix local.rebar
 CMD mix deps.get && mix phx.server
 
-# production
-FROM base
+# production build
+FROM base AS build
 
-COPY .. /app
+ENV MIX_ENV=prod
 WORKDIR /app
 
-RUN rm -rf _build deps .env.dist .gitignore Makefile README.md
+RUN mix local.hex --force && mix local.rebar --force
 
-# install hex & rebar
-RUN mix local.hex --force && mix local.rebar
-
+COPY mix.exs mix.lock ./
 RUN mix deps.get --only prod
 
-RUN MIX_ENV=prod mix compile
+COPY config config
+RUN mix deps.compile
 
-CMD ["env", "MIX_ENV=prod", "mix", "phx.server"]
+COPY priv priv
+COPY lib lib
+COPY rel rel
+RUN mix release
+
+# production
+FROM alpine:3.24
+
+RUN apk add --no-cache libstdc++ ncurses-libs openssl
+
+ENV LANG=C.UTF-8
+WORKDIR /app
+COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/pokr ./
+USER nobody
+
+CMD ["bin/server"]

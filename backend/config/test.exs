@@ -15,6 +15,8 @@ config :pokr, Pokr.Repo,
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
+config :pokr, run_database_tasks: false
+
 config :pokr, PokrWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "eRdFn4BsApNcqekGYk+KsdIt2+iaSavDg0PUpL8FCEkmBJEEn/h0uHA4La7DlkBh",

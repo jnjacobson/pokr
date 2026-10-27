@@ -1,12 +1,10 @@
 defmodule PokrWeb.GameChannelTest do
   use PokrWeb.ChannelCase
 
-  alias Pokr.GameState
+  alias Pokr.Games
 
   setup do
-    game_id = unique_game_id()
-    on_exit(fn -> GameState.delete_game(game_id) end)
-    {:ok, game_id: game_id}
+    {:ok, game_id: unique_game_id()}
   end
 
   defp join_as(player_id, game_id) do
@@ -37,8 +35,9 @@ defmodule PokrWeb.GameChannelTest do
   test "joining creates the game, a second join reuses it", %{game_id: game_id} do
     join_as("p1", game_id)
     assert_push "join", %{are_cards_revealed: false}
+    assert Games.get_game(game_id)
 
-    GameState.set_are_cards_revealed(game_id, true)
+    Games.set_are_cards_revealed(game_id, true)
 
     join_as("p2", game_id)
     assert_push "join", %{player_id: "p2", are_cards_revealed: true}
@@ -58,11 +57,11 @@ defmodule PokrWeb.GameChannelTest do
 
     push(socket, "cards_revealed", %{})
     assert_broadcast "cards_revealed", %{}
-    assert GameState.get_are_cards_revealed?(game_id)
+    assert Games.get_game(game_id).are_cards_revealed
 
     push(socket, "cards_reset", %{})
     assert_broadcast "cards_reset", %{}
-    refute GameState.get_are_cards_revealed?(game_id)
+    refute Games.get_game(game_id).are_cards_revealed
   end
 
   test "joining twice with the same player id announces a replaced session", %{game_id: game_id} do
@@ -74,37 +73,26 @@ defmodule PokrWeb.GameChannelTest do
     assert_broadcast "session_replaced", %{player_id: "p1", new_join_at: _}
   end
 
-  describe "leaving" do
-    # terminate/2 runs before the presence tracker notices the dead channel
-    # process, so the game used to outlive its last player.
-    test "the game is deleted once the last player leaves", %{game_id: game_id} do
-      socket = join_as("p1", game_id)
-      assert_push "join", %{}
+  test "a game survives its last player leaving", %{game_id: game_id} do
+    socket = join_as("p1", game_id)
+    push(socket, "cards_revealed", %{})
+    assert_broadcast "cards_revealed", %{}
 
-      close_and_wait(socket)
+    close_and_wait(socket)
 
-      assert GameState.create_game(game_id) == :ok
+    join_as("p2", game_id)
+    assert_push "join", %{player_id: "p2", are_cards_revealed: true}
+  end
+
+  test "joining a game with an invalid id is refused" do
+    for invalid <- ["", "UPPER", "with space", "ünicode", String.duplicate("a", 65)] do
+      assert {:error, %{reason: :invalid_game_id}} =
+               PokrWeb.Socket
+               |> socket("socket:p1", %{id: "p1"})
+               |> subscribe_and_join(PokrWeb.GameChannel, "game:" <> invalid)
     end
 
-    test "the game is kept while another player is still in it", %{game_id: game_id} do
-      socket = join_as("p1", game_id)
-      join_as("p2", game_id)
-      assert_push "join", %{player_id: "p2"}
-
-      close_and_wait(socket)
-
-      assert GameState.create_game(game_id) == :error
-    end
-
-    test "the game is kept when a replaced session of the same player closes", %{game_id: game_id} do
-      old_socket = join_as("p1", game_id)
-      join_as("p1", game_id)
-      assert_push "join", %{player_id: "p1"}
-
-      close_and_wait(old_socket)
-
-      assert GameState.create_game(game_id) == :error
-    end
+    assert Pokr.Repo.aggregate(Pokr.Game, :count) == 0
   end
 
   defp close_and_wait(socket) do
