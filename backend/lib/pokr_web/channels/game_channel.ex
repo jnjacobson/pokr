@@ -1,29 +1,26 @@
 defmodule PokrWeb.GameChannel do
   use Phoenix.Channel
 
+  @game_id_format ~r/\A[a-z0-9-]{1,64}\z/
+
   def join("game:" <> game_id, _params, socket) do
-    Pokr.GameState.create_game(game_id)
+    with :ok <- validate_game_id(game_id),
+         {:ok, game} <- Pokr.Games.join_game(game_id) do
+      socket = assign(socket, :game_id, game_id)
 
-    socket = assign(socket, :game_id, game_id)
+      send(self(), {:after_join, game})
 
-    send(self(), :after_join)
-
-    {:ok, socket}
-  end
-
-  def terminate(_reason, socket) do
-    # The presence tracker only drops this channel after the process is gone,
-    # so untrack it here or it still counts as a player below.
-    PokrWeb.Presence.untrack(socket, socket.assigns[:id])
-
-    if !Pokr.GameState.has_players?(socket.assigns[:game_id]) do
-      Pokr.GameState.delete_game(socket.assigns[:game_id])
+      {:ok, socket}
+    else
+      {:error, reason} -> {:error, %{reason: reason}}
     end
-
-    {:ok, socket}
   end
 
-  def handle_info(:after_join, socket) do
+  defp validate_game_id(game_id) do
+    if Regex.match?(@game_id_format, game_id), do: :ok, else: {:error, :invalid_game_id}
+  end
+
+  def handle_info({:after_join, game}, socket) do
     presence_list = PokrWeb.Presence.list(socket)
     player_id = socket.assigns[:id]
     game_id = socket.assigns[:game_id]
@@ -48,8 +45,8 @@ defmodule PokrWeb.GameChannel do
       player_id: player_id,
       token: Phoenix.Token.sign(PokrWeb.Endpoint, "player-token-salt", player_id),
       joined_at: join_timestamp,
-      are_cards_revealed: Pokr.GameState.get_are_cards_revealed?(game_id),
-      deck: Pokr.GameState.get_deck(game_id)
+      are_cards_revealed: game.are_cards_revealed,
+      deck: game.deck
     })
 
     {:noreply, socket}
@@ -62,18 +59,24 @@ defmodule PokrWeb.GameChannel do
   end
 
   def handle_in("cards_revealed", params, socket) do
-    Pokr.GameState.set_are_cards_revealed(socket.assigns[:game_id], true)
+    case Pokr.Games.set_are_cards_revealed(socket.assigns[:game_id], true) do
+      :ok ->
+        broadcast!(socket, "cards_revealed", params)
+        {:noreply, socket}
 
-    broadcast!(socket, "cards_revealed", params)
-
-    {:noreply, socket}
+      {:error, reason} ->
+        {:reply, {:error, %{reason: reason}}, socket}
+    end
   end
 
   def handle_in("cards_reset", params, socket) do
-    Pokr.GameState.set_are_cards_revealed(socket.assigns[:game_id], false)
+    case Pokr.Games.set_are_cards_revealed(socket.assigns[:game_id], false) do
+      :ok ->
+        broadcast!(socket, "cards_reset", params)
+        {:noreply, socket}
 
-    broadcast!(socket, "cards_reset", params)
-
-    {:noreply, socket}
+      {:error, reason} ->
+        {:reply, {:error, %{reason: reason}}, socket}
+    end
   end
 end
