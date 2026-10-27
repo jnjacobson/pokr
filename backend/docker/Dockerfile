@@ -32,7 +32,7 @@ RUN mix release
 # production
 FROM alpine:3.24
 
-RUN apk add --no-cache libstdc++ ncurses-libs openssl
+RUN apk add --no-cache libstdc++ ncurses-libs openssl lksctp-tools
 
 ENV LANG=C.UTF-8
 WORKDIR /app
