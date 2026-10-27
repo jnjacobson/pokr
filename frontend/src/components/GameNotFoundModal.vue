@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Modal from '@/components/Modal.vue';
-import ModalButton from '@/components/ModalButton.vue';
+import BaseButton from '@/components/BaseButton.vue';
 import { useGameStore } from '@/stores/useGameStore';
 
 const gameStore = useGameStore();
@@ -20,9 +20,9 @@ const startNewGame = () => window.location.assign('/');
     </p>
 
     <template #actions>
-      <ModalButton @click="startNewGame">
+      <BaseButton @click="startNewGame">
         Start a new game
-      </ModalButton>
+      </BaseButton>
     </template>
   </Modal>
 </template>

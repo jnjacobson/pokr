@@ -4,6 +4,7 @@ import { ref, onMounted } from 'vue';
 import PlayerSettingsModal from './PlayerSettingsModal.vue';
 import { usePlayerSettingsStore } from './usePlayerSettingsStore';
 
+import BaseButton from '@/components/BaseButton.vue';
 import { useGameStore } from '@/stores/useGameStore';
 
 const playerSettingsStore = usePlayerSettingsStore();
@@ -26,16 +27,12 @@ onMounted(() => {
     @close="showModal = false"
   />
 
-  <button
+  <BaseButton
     v-if="(gameStore.myPlayer?.name ?? null) !== null"
-    class="
-      py-2 px-4 rounded-md transition duration-75 font-semibold
-      dark:hover:bg-gray-800 hover:bg-gray-100 text-blue-700 dark:text-blue-400
-    "
-    type="button"
+    variant="secondary"
     @click="showModal = true"
   >
     {{ gameStore.myPlayer?.name }}
     &#x270F;
-  </button>
+  </BaseButton>
 </template>

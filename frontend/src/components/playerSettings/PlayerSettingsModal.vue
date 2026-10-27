@@ -9,7 +9,7 @@ import {
 import { usePlayerSettingsStore } from './usePlayerSettingsStore';
 
 import Modal from '@/components/Modal.vue';
-import ModalButton from '@/components/ModalButton.vue';
+import BaseButton from '@/components/BaseButton.vue';
 import ToggleSwitch from '@/components/ToggleSwitch.vue';
 
 const props = defineProps<{
@@ -98,13 +98,13 @@ const submit = () => {
     </form>
 
     <template #actions>
-      <ModalButton
+      <BaseButton
         :disabled="isNameInvalid"
         form="player-settings"
         type="submit"
       >
         Let's go!
-      </ModalButton>
+      </BaseButton>
     </template>
   </Modal>
 </template>

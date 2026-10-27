@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import ModalButton from '@/components/ModalButton.vue';
+import BaseButton from '@/components/BaseButton.vue';
 
 const showLinkCopySuccess = ref(false);
 
@@ -16,7 +16,7 @@ const copyInviteLink = async () => {
 </script>
 
 <template>
-  <ModalButton
+  <BaseButton
     :variant="showLinkCopySuccess ? 'success' : 'primary'"
     @click="!showLinkCopySuccess && copyInviteLink()"
   >
@@ -25,5 +25,5 @@ const copyInviteLink = async () => {
     <template #success>
       Link copied!
     </template>
-  </ModalButton>
+  </BaseButton>
 </template>

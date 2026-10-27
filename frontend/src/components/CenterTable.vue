@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
 
+import BaseButton from '@/components/BaseButton.vue';
 import { useCountdownStore } from '@/stores/useCountdownStore';
 import { useGameStore } from '@/stores/useGameStore';
 import type { Player } from '@/types';
@@ -39,16 +40,12 @@ watch(() => gameStore.areCardsRevealed, (areCardsRevealed, oldAreCardsRevealed) 
       v-text="countdownStore.countdown"
     />
 
-    <button
+    <BaseButton
       v-else
-      class="
-        py-2 px-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-200 dark:hover:bg-blue-300
-        rounded-md transition font-semibold text-lg text-white dark:text-gray-900
-      "
-      type="button"
+      class="text-lg"
       @click="gameStore.areCardsRevealed ? gameStore.resetCards() : gameStore.revealCards()"
     >
       {{ gameStore.areCardsRevealed ? 'Next voting' : 'Show cards' }}
-    </button>
+    </BaseButton>
   </div>
 </template>

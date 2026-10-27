@@ -2,6 +2,7 @@
 import { ref, onMounted, watch } from 'vue';
 import { toDataURL } from 'qrcode';
 
+import BaseButton from '@/components/BaseButton.vue';
 import Modal from '@/components/Modal.vue';
 import { useGameStore } from '@/stores/useGameStore';
 import { useDarkModeStore } from '@/components/darkMode/useDarkModeStore';
@@ -79,11 +80,7 @@ watch(showModal, (isOpen) => {
     </template>
   </Modal>
 
-  <button
-    class="py-2 px-4 rounded-md transition duration-75 font-semibold text-white dark:text-gray-900 bg-blue-600 hover:bg-blue-700 dark:bg-blue-200 dark:hover:bg-blue-300"
-    type="button"
-    @click="showModal = true"
-  >
+  <BaseButton @click="showModal = true">
     Share
-  </button>
+  </BaseButton>
 </template>
