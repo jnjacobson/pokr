@@ -12,7 +12,7 @@ defmodule PokrWeb.Socket do
         {:ok, assign(socket, :id, verified_id)}
 
       :error ->
-        new_id = UUID.uuid1()
+        new_id = Ecto.UUID.generate()
         {:ok, assign(socket, :id, new_id)}
     end
   end

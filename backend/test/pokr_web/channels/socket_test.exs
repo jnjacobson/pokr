@@ -12,7 +12,7 @@ defmodule PokrWeb.SocketTest do
 
   test "assigns a new id when no credentials are given" do
     assert {:ok, socket} = connect(PokrWeb.Socket, %{})
-    assert is_binary(socket.assigns.id)
+    assert {:ok, _} = Ecto.UUID.cast(socket.assigns.id)
   end
 
   test "assigns a new id when the token belongs to another player" do
