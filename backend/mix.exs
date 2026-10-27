@@ -11,6 +11,7 @@ defmodule Pokr.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
+      releases: [pokr: [include_executables_for: [:unix]]],
       listeners: [Phoenix.CodeReloader]
     ]
   end
