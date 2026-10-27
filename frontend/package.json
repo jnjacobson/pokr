@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "npm run tsc && npm run build-only",
     "preview": "vite preview",
-    "test:unit": "vitest --environment jsdom --root src/",
+    "test:unit": "vitest run",
     "build-only": "vite build",
     "tsc": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "lint": "eslint src/**/*.{ts,vue}",
