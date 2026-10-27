@@ -54,10 +54,11 @@ watch(showModal, (isOpen) => {
 <template>
   <Modal
     :show="showModal"
+    closable
     @close="showModal = false"
   >
     <div class="flex flex-col items-center">
-      <div class="rounded-lg bg-white dark:bg-gray-800 p-3 pb-2 text-center mb-5">
+      <div class="rounded-lg bg-white dark:bg-gray-800 p-3 pb-2 text-center">
         <img
           v-if="qrImageUrl"
           :src="qrImageUrl"
@@ -71,18 +72,11 @@ watch(showModal, (isOpen) => {
         />
         <span class="font-mono text-sm text-gray-600 dark:text-gray-400">{{ gameStore.gameId }}</span>
       </div>
-
-      <div class="flex items-center gap-3">
-        <CopyInviteLinkButton />
-        <button
-          class="px-4 py-2 rounded-md transition duration-7 text-blue-600 dark:text-blue-400 font-semibold hover:bg-blue-200 dark:hover:bg-gray-800"
-          type="button"
-          @click="showModal = false"
-        >
-          Close
-        </button>
-      </div>
     </div>
+
+    <template #actions>
+      <CopyInviteLinkButton />
+    </template>
   </Modal>
 
   <button

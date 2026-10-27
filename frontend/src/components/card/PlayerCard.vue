@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import EyeIcon from '@/components/EyeIcon.vue';
+import EyeIcon from '@/components/icons/EyeIcon.vue';
 
 defineProps<{
   value: string | null,
