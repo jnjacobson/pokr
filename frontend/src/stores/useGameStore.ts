@@ -3,6 +3,7 @@ import {
   ref,
   computed,
   watch,
+  shallowRef,
   type Ref,
   type ComputedRef,
 } from 'vue';
@@ -43,14 +44,15 @@ export const useGameStore = defineStore('game', (): {
 
   const myPlayer = computed(() => players.value.find((player) => player.id === myId.value));
 
-  const socket = ref<Socket>(new Socket(import.meta.env.VITE_BACKEND_WS_URL, {
+  // shallowRef: phoenix compares object identity internally, which breaks behind Vue's deep reactive proxies.
+  const socket = shallowRef<Socket>(new Socket(import.meta.env.VITE_BACKEND_WS_URL, {
     params: () => ({
       player_id: myId.value,
       token: myToken.value,
     }),
   }));
-  const channel = ref<Channel>();
-  const presence = ref<Presence>();
+  const channel = shallowRef<Channel>();
+  const presence = shallowRef<Presence>();
 
   socket.value.onOpen(() => { isConnected.value = true; });
   socket.value.onClose(() => { isConnected.value = false; });
