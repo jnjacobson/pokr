@@ -9,6 +9,7 @@ import Deck from '@/components/Deck.vue';
 import ShareButton from '@/components/ShareButton.vue';
 import PlayerRow from '@/components/PlayerRow.vue';
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
+import GameNotFoundModal from '@/components/GameNotFoundModal.vue';
 import SessionReplacedModal from '@/components/SessionReplacedModal.vue';
 import { useGameStore } from '@/stores/useGameStore';
 import { useCountdownStore } from '@/stores/useCountdownStore';
@@ -117,5 +118,6 @@ const oddPlayers = computed(() => (
     <DarkModeSwitch class="absolute top-5 right-5" />
 
     <SessionReplacedModal />
+    <GameNotFoundModal />
   </main>
 </template>

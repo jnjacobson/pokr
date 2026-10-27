@@ -84,6 +84,29 @@ describe('useGameStore', () => {
     });
   });
 
+  describe('refused joins', () => {
+    it('flags a game that does not exist and has nobody in it', async () => {
+      server.joinRefusal = 'game_not_found';
+      const store = useGameStore();
+
+      store.joinGame('test-game');
+
+      await vi.waitFor(() => expect(store.isGameNotFound).toBe(true));
+      expect(store.myPlayer).toBeUndefined();
+    });
+
+    it('does not flag temporary errors, which phoenix retries by itself', async () => {
+      server.joinRefusal = 'unavailable';
+      const store = useGameStore();
+
+      store.joinGame('test-game');
+
+      await vi.waitFor(() => expect(store.isConnected).toBe(true));
+      await new Promise((resolve) => { setTimeout(resolve, 50); });
+      expect(store.isGameNotFound).toBe(false);
+    });
+  });
+
   describe('players', () => {
     it('lists everyone who is present', async () => {
       const store = await joinGame();

@@ -97,6 +97,9 @@ export class FakePhoenixServer {
 
   readonly game: GameSetup;
 
+  /** Refuses joins with this reason, like the backend does for games that don't exist. */
+  joinRefusal: string | undefined;
+
   private connection: FakeConnection | undefined;
 
   private topic = '';
@@ -150,6 +153,15 @@ export class FakePhoenixServer {
     switch (event) {
       case 'phx_join':
         this.topic = topic;
+
+        if (this.joinRefusal !== undefined) {
+          connection.deliver([joinRef, ref, topic, 'phx_reply', {
+            status: 'error',
+            response: { reason: this.joinRefusal },
+          }]);
+          break;
+        }
+
         connection.deliver([joinRef, ref, topic, 'phx_reply', OK_REPLY]);
         this.pushGameState(connection, topic);
         break;
