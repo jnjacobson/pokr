@@ -23,9 +23,9 @@ docker compose up         # frontend :5173, backend :4000, postgres :5432
 | Part     | Where                    | How                                                       |
 | -------- | ------------------------ | --------------------------------------------------------- |
 | Frontend | Cloudflare Pages `pokr`  | Push to `main`. Cloudflare builds and deploys by itself.  |
-| Backend  | Oracle Cloud VM, Docker  | Push to `main`. CI pushes the image to GHCR; re-pull it by updating the stack in Portainer. See [backend/README.md](backend/README.md). |
+| Backend  | Oracle Cloud VM, Docker  | Push to `main` with changes under `backend/`. CI pushes the image to GHCR and redeploys the `pokr-backend` stack through the Portainer API. See [backend/README.md](backend/README.md). |
 
-GitHub Actions (`.github/workflows/ci.yml`) runs lint, type check, tests and build for the frontend and format, compile and tests for the backend on every PR and push to `main`. On `main` it also publishes the backend image to GHCR. It does not deploy: Cloudflare deploys the frontend by itself, the backend stack is updated by hand in Portainer.
+GitHub Actions (`.github/workflows/ci.yml`) runs lint, type check, tests and build for the frontend and format, compile and tests for the backend on every PR and push to `main`. On `main`, pushes that change `backend/` also publish the backend image to GHCR and redeploy the backend stack. Cloudflare deploys the frontend by itself.
 
 ## Infrastructure
 

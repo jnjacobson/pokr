@@ -69,9 +69,29 @@ jobs:
       - run: mix compile --warnings-as-errors
       - run: mix test
 
-  publish-backend:
+  changes:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: backend
+    runs-on: ubuntu-26.04
+    outputs:
+      backend: ${{ steps.diff.outputs.backend }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      # An unknown `before` commit (new branch, force push) counts as changed.
+      - id: diff
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if git diff --quiet "$BEFORE" "$GITHUB_SHA" -- backend; then
+            echo backend=false >> "$GITHUB_OUTPUT"
+          else
+            echo backend=true >> "$GITHUB_OUTPUT"
+          fi
+
+  publish-backend:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.changes.outputs.backend == 'true'
+    needs: [backend, changes]
     runs-on: ubuntu-26.04
     permissions:
       contents: read
@@ -95,3 +115,39 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/pokr-backend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy-backend:
+    needs: publish-backend
+    runs-on: ubuntu-26.04
+    concurrency:
+      group: deploy-backend
+      cancel-in-progress: false
+    env:
+      PORTAINER_URL: https://portainer.elbe.software/api
+      PORTAINER_ENDPOINT_ID: 3
+      PORTAINER_STACK_ID: 2
+      PORTAINER_TOKEN: ${{ secrets.PORTAINER_TOKEN }}
+    steps:
+      # The update call replaces the stack's env, so send back what the
+      # stack has now and only ask for a re-pull of the images.
+      - name: Re-pull and redeploy the stack
+        run: |
+          auth="X-API-Key: $PORTAINER_TOKEN"
+          stack="$PORTAINER_URL/stacks/$PORTAINER_STACK_ID"
+          env=$(curl -fsS -H "$auth" "$stack" | jq -c .Env)
+          file=$(curl -fsS -H "$auth" "$stack/file" | jq -r .StackFileContent)
+          jq -n --argjson env "$env" --arg file "$file" \
+            '{env: $env, stackFileContent: $file, prune: false, repullImageAndRedeploy: true, pullImage: true}' |
+            curl -fsS -X PUT -H "$auth" -H 'Content-Type: application/json' \
+              --data-binary @- "$stack?endpointId=$PORTAINER_ENDPOINT_ID" > /dev/null
+      - name: Wait for the backend container
+        run: |
+          for _ in $(seq 12); do
+            state=$(curl -fsS -G -H "X-API-Key: $PORTAINER_TOKEN" \
+              --data-urlencode 'filters={"name":["pokr_backend"]}' \
+              "$PORTAINER_URL/endpoints/$PORTAINER_ENDPOINT_ID/docker/containers/json" | jq -r '.[0].State // "missing"')
+            echo "pokr_backend: $state"
+            [ "$state" = running ] && exit 0
+            sleep 5
+          done
+          exit 1
