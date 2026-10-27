@@ -45,7 +45,7 @@ defmodule Pokr.MixProject do
       {:jason, "~> 1.4"},
       {:plug_cowboy, "~> 2.8"},
       {:mnemonic_slugs, "~> 0.0.3"},
-      {:cors_plug, "~> 3.0"},
+      {:cors_plug, "~> 3.0"}
     ]
   end
 

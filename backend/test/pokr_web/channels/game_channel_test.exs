@@ -73,6 +73,7 @@ defmodule PokrWeb.GameChannelTest do
 
     assert_broadcast "session_replaced", %{player_id: "p1", new_join_at: _}
   end
+
   describe "leaving" do
     # terminate/2 runs before the presence tracker notices the dead channel
     # process, so the game used to outlive its last player.

@@ -16,10 +16,8 @@ defmodule Pokr.Application do
       {Phoenix.PubSub, name: Pokr.PubSub},
       # Start the Endpoint (http/https)
       PokrWeb.Endpoint,
-
       PokrWeb.Presence,
-
-      Pokr.GameState,
+      Pokr.GameState
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
