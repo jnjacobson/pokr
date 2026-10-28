@@ -24,7 +24,7 @@ const OPEN = 1;
 const CLOSED = 3;
 
 // GameChannel broadcasts these to everyone on the topic, the sender included.
-const ECHOED_EVENTS = ['player_updated', 'cards_revealed', 'cards_reset'];
+const ECHOED_EVENTS = ['player_updated', 'deck_changed', 'cards_revealed', 'cards_reset'];
 
 const OK_REPLY = { status: 'ok', response: {} };
 

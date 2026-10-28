@@ -6,6 +6,7 @@ import CenterTable from '@/components/CenterTable.vue';
 import Confetti from '@/components/Confetti.vue';
 import DarkModeSwitch from '@/components/darkMode/DarkModeSwitch.vue';
 import Deck from '@/components/Deck.vue';
+import DeckSelect from '@/components/DeckSelect.vue';
 import ShareButton from '@/components/ShareButton.vue';
 import PlayerRow from '@/components/PlayerRow.vue';
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
@@ -96,6 +97,8 @@ const oddPlayers = computed(() => (
             leave-to-class="opacity-0"
           >
             <div v-if="!gameStore.areCardsRevealed">
+              <DeckSelect class="mb-5" />
+
               <p
                 v-if="gameStore.myPlayer?.isSpectator"
                 class="leading-none"

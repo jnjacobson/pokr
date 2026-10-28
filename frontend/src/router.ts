@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
+import { useLastDeck } from './decks';
 import type { Game } from './types';
 
 const router = createRouter({
@@ -23,6 +24,8 @@ router.beforeEach(async (to) => {
     `${import.meta.env.VITE_BACKEND_API_URL}/games`,
     {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ deck: useLastDeck().value }),
     },
   );
 

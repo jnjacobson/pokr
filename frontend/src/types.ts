@@ -16,6 +16,10 @@ export type JoinPayload = {
   are_cards_revealed: boolean;
 };
 
+export type DeckChangedPayload = {
+  deck: string[];
+};
+
 export type JoinErrorPayload = {
   reason: string;
 };
@@ -28,6 +32,7 @@ export type SessionReplacedPayload = {
 export enum ChannelEvent {
   Join = 'join',
   PlayerUpdated = 'player_updated',
+  DeckChanged = 'deck_changed',
   CardsRevealed = 'cards_revealed',
   CardsReset = 'cards_reset',
   SessionReplaced = 'session_replaced',
