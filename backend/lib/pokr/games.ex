@@ -11,21 +11,66 @@ defmodule Pokr.Games do
   alias Pokr.{Game, Repo}
 
   @stale_after_days 7
+  @deck_sizes 2..20
+  @card_lengths 1..3
 
-  @doc "Creates a game under a new random three word slug."
-  @spec create_game() :: {:ok, Game.t()} | {:error, :unavailable}
-  def create_game, do: create_game(5)
+  @doc """
+  Creates a game under a new random three word slug. The clients bring their
+  own decks, so the deck only has to pass `valid_deck?/1`.
+  """
+  @spec create_game(term) :: {:ok, Game.t()} | {:error, :invalid_deck | :unavailable}
+  def create_game(deck) do
+    if valid_deck?(deck), do: create_game(deck, 5), else: {:error, :invalid_deck}
+  end
 
-  defp create_game(attempts_left) do
+  defp create_game(deck, attempts_left) do
     changeset =
-      %Game{id: MnemonicSlugs.generate_slug(3)}
+      %Game{id: MnemonicSlugs.generate_slug(3), deck: deck}
       |> Ecto.Changeset.change()
       |> Ecto.Changeset.unique_constraint(:id, name: :games_pkey)
 
     case guard(fn -> Repo.insert(changeset) end) do
-      {:error, %Ecto.Changeset{}} when attempts_left > 1 -> create_game(attempts_left - 1)
+      {:error, %Ecto.Changeset{}} when attempts_left > 1 -> create_game(deck, attempts_left - 1)
       {:error, %Ecto.Changeset{}} -> {:error, :unavailable}
       result -> result
+    end
+  end
+
+  @doc """
+  A deck is 2 to 20 distinct cards of 1 to 3 characters each, the most a card
+  can show. Characters are graphemes, so `☕` counts as one.
+  """
+  @spec valid_deck?(term) :: boolean
+  def valid_deck?(deck) when is_list(deck) do
+    length(deck) in @deck_sizes and Enum.uniq(deck) == deck and
+      Enum.all?(
+        deck,
+        &(is_binary(&1) and String.valid?(&1) and String.length(&1) in @card_lengths)
+      )
+  end
+
+  def valid_deck?(_deck), do: false
+
+  @doc "Swaps the deck of a game, which is only allowed while its cards are hidden."
+  @spec set_deck(String.t(), term) ::
+          :ok | {:error, :invalid_deck | :cards_revealed | :game_not_found | :unavailable}
+  def set_deck(game_id, deck) do
+    if valid_deck?(deck), do: swap_deck(game_id, deck), else: {:error, :invalid_deck}
+  end
+
+  defp swap_deck(game_id, deck) do
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+    query = from(g in Game, where: g.id == ^game_id and not g.are_cards_revealed)
+
+    case guard(fn -> {:ok, Repo.update_all(query, set: [deck: deck, updated_at: now])} end) do
+      {:ok, {1, _}} ->
+        :ok
+
+      {:ok, {0, _}} ->
+        if get_game(game_id), do: {:error, :cards_revealed}, else: {:error, :game_not_found}
+
+      error ->
+        error
     end
   end
 

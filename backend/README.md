@@ -1,6 +1,6 @@
 # Pokr Backend
 
-Phoenix 1.8 (Elixir 1.20) API and websocket for pokr. Players and their cards live in the clients and in Phoenix Presence. The rest of a game's state (whether the cards are revealed) is stored in the `games` table (`lib/pokr/games.ex`), so it survives a restart. Games are created by `POST /api/games`; joining an id that does not exist is refused with `game_not_found`. Games without activity for 7 days are deleted hourly.
+Phoenix 1.8 (Elixir 1.20) API and websocket for pokr. Players and their cards live in the clients and in Phoenix Presence. The rest of a game's state (its deck and whether the cards are revealed) is stored in the `games` table (`lib/pokr/games.ex`), so it survives a restart. Games are created by `POST /api/games` with the `deck` the clients bring (2 to 20 distinct cards of up to 3 characters, else 422); the `deck_changed` event swaps it while the cards are hidden; joining an id that does not exist is refused with `game_not_found`. Games without activity for 7 days are deleted hourly.
 
 ## Development
 
