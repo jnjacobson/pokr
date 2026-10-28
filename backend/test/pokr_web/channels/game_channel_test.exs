@@ -3,8 +3,10 @@ defmodule PokrWeb.GameChannelTest do
 
   alias Pokr.Games
 
+  @deck ~w(S M L ? ☕)
+
   setup do
-    {:ok, game} = Games.create_game()
+    {:ok, game} = Games.create_game(@deck)
     {:ok, game_id: game.id}
   end
 
@@ -30,7 +32,7 @@ defmodule PokrWeb.GameChannelTest do
     }
 
     assert {:ok, "p1"} = Phoenix.Token.verify(PokrWeb.Endpoint, "player-token-salt", token)
-    assert deck == ~w(0 ½ 1 2 3 5 8 13 20 40 100 ? ☕)
+    assert deck == @deck
   end
 
   test "a second player joins the same game and sees its state", %{game_id: game_id} do
@@ -62,6 +64,45 @@ defmodule PokrWeb.GameChannelTest do
     push(socket, "cards_reset", %{})
     assert_broadcast "cards_reset", %{}
     refute Games.get_game(game_id).are_cards_revealed
+  end
+
+  test "changing the deck is stored and broadcast", %{game_id: game_id} do
+    socket = join_as("p1", game_id)
+
+    push(socket, "deck_changed", %{"deck" => ~w(XS S M)})
+
+    assert_broadcast "deck_changed", %{deck: ~w(XS S M)}
+    assert Games.get_game(game_id).deck == ~w(XS S M)
+  end
+
+  test "an invalid deck is refused and not broadcast", %{game_id: game_id} do
+    socket = join_as("p1", game_id)
+
+    ref = push(socket, "deck_changed", %{"deck" => ~w(1 1)})
+
+    assert_reply ref, :error, %{reason: :invalid_deck}
+    refute_broadcast "deck_changed", _
+    assert Games.get_game(game_id).deck == @deck
+  end
+
+  test "a deck change without a deck is refused", %{game_id: game_id} do
+    socket = join_as("p1", game_id)
+
+    ref = push(socket, "deck_changed", %{})
+
+    assert_reply ref, :error, %{reason: :invalid_deck}
+  end
+
+  test "the deck cannot change while the cards are revealed", %{game_id: game_id} do
+    socket = join_as("p1", game_id)
+    push(socket, "cards_revealed", %{})
+    assert_broadcast "cards_revealed", %{}
+
+    ref = push(socket, "deck_changed", %{"deck" => ~w(XS S M)})
+
+    assert_reply ref, :error, %{reason: :cards_revealed}
+    refute_broadcast "deck_changed", _
+    assert Games.get_game(game_id).deck == @deck
   end
 
   test "joining twice with the same player id announces a replaced session", %{game_id: game_id} do

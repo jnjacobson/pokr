@@ -179,6 +179,46 @@ describe('useGameStore', () => {
     });
   });
 
+  describe('deck', () => {
+    it('asks the server to change the deck', async () => {
+      const store = await joinGame();
+
+      store.changeDeck(['XS', 'S', 'M']);
+
+      await vi.waitFor(() => expect(server.received).toContainEqual({
+        topic: TOPIC,
+        event: ChannelEvent.DeckChanged,
+        payload: { deck: ['XS', 'S', 'M'] },
+      }));
+    });
+
+    it('switches to the new deck and drops every card when someone changes it', async () => {
+      const store = await joinGame();
+
+      server.push(ChannelEvent.PlayerUpdated, { id: OTHER, name: 'Ann', card: '2' });
+      store.chooseCard('3');
+      await vi.waitFor(() => expect(store.players.map(({ card }) => card)).toContain('2'));
+      expect(sessionStorage.getItem('playerCard:test-game')).toBe('3');
+
+      server.push(ChannelEvent.DeckChanged, { deck: ['XS', 'S', 'M'] });
+
+      await vi.waitFor(() => expect(store.deck).toEqual(['XS', 'S', 'M']));
+      expect(store.players.map(({ card }) => card)).toEqual([null, null]);
+      expect(sessionStorage.getItem('playerCard:test-game')).toBeNull();
+    });
+
+    it('remembers the deck of the game for the next one, whoever changed it', async () => {
+      server.game.deck = ['1', '2'];
+      const store = await joinGame();
+      expect(localStorage.getItem('lastDeck')).toBe('["1","2"]');
+
+      server.push(ChannelEvent.DeckChanged, { deck: ['XS', 'S', 'M'] });
+
+      await vi.waitFor(() => expect(store.deck).toEqual(['XS', 'S', 'M']));
+      expect(localStorage.getItem('lastDeck')).toBe('["XS","S","M"]');
+    });
+  });
+
   describe('spectators', () => {
     it('shows another player as a spectator when they say so', async () => {
       const store = await joinGame();

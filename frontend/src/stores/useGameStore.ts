@@ -11,8 +11,9 @@ import { Channel, Socket, Presence } from 'phoenix';
 import { useLocalStorage, useSessionStorage } from '@vueuse/core';
 
 import { usePlayerSettingsStore } from '@/components/playerSettings/usePlayerSettingsStore';
+import { useLastDeck } from '@/decks';
 import type {
-  JoinErrorPayload, JoinPayload, Player, SessionReplacedPayload,
+  DeckChangedPayload, JoinErrorPayload, JoinPayload, Player, SessionReplacedPayload,
 } from '@/types';
 import { ChannelEvent } from '@/types';
 
@@ -28,6 +29,7 @@ export const useGameStore = defineStore('game', (): {
 
   joinGame: (gameId: string) => void,
   chooseCard: (card: string | null) => void,
+  changeDeck: (newDeck: string[]) => void,
   revealCards: () => void,
   resetCards: () => void,
 } => {
@@ -35,6 +37,7 @@ export const useGameStore = defineStore('game', (): {
 
   const gameId = ref<string>();
   const deck = ref<string[]>([]);
+  const lastDeck = useLastDeck();
   const areCardsRevealed = ref<boolean | undefined>(undefined);
   const isConnected = ref(false);
   const isSessionReplaced = ref(false);
@@ -91,6 +94,7 @@ export const useGameStore = defineStore('game', (): {
 
     channel.value.on(ChannelEvent.Join, onJoin);
     channel.value.on(ChannelEvent.PlayerUpdated, onPlayerUpdated);
+    channel.value.on(ChannelEvent.DeckChanged, onDeckChanged);
     channel.value.on(ChannelEvent.CardsRevealed, onCardsRevealed);
     channel.value.on(ChannelEvent.CardsReset, onCardsReset);
     channel.value.on(ChannelEvent.SessionReplaced, onSessionReplaced);
@@ -108,6 +112,18 @@ export const useGameStore = defineStore('game', (): {
 
   function chooseCard(card: string | null) {
     updateMyPlayer({ card });
+  }
+
+  function changeDeck(newDeck: string[]) {
+    channel.value?.push(ChannelEvent.DeckChanged, { deck: newDeck });
+  }
+
+  function clearCards() {
+    myCard.value = null;
+
+    players.value.forEach((player: Player) => {
+      player.card = null;
+    });
   }
 
   function updateMyPlayer(player: Partial<Player>) {
@@ -161,6 +177,7 @@ export const useGameStore = defineStore('game', (): {
 
   function onJoin(joinPayload: JoinPayload & { joined_at: number }) {
     deck.value = joinPayload.deck;
+    lastDeck.value = joinPayload.deck;
     areCardsRevealed.value = joinPayload.are_cards_revealed;
 
     myId.value = joinPayload.player_id;
@@ -207,11 +224,14 @@ export const useGameStore = defineStore('game', (): {
 
   function onCardsReset() {
     areCardsRevealed.value = false;
-    myCard.value = null;
+    clearCards();
+  }
 
-    players.value.forEach((player: Player) => {
-      player.card = null;
-    });
+  // The old cards mean nothing on the new deck.
+  function onDeckChanged(payload: DeckChangedPayload) {
+    deck.value = payload.deck;
+    lastDeck.value = payload.deck;
+    clearCards();
   }
 
   function onJoinError({ reason }: JoinErrorPayload) {
@@ -244,6 +264,7 @@ export const useGameStore = defineStore('game', (): {
 
     joinGame,
     chooseCard,
+    changeDeck,
     revealCards,
     resetCards,
   };

@@ -1,10 +1,15 @@
 defmodule PokrWeb.GameController do
   use PokrWeb, :controller
 
-  def create(conn, _params) do
-    case Pokr.Games.create_game() do
+  def create(conn, params) do
+    case Pokr.Games.create_game(params["deck"]) do
       {:ok, game} ->
         json(conn, %{id: game.id})
+
+      {:error, :invalid_deck} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{errors: %{deck: ["is invalid"]}})
 
       {:error, :unavailable} ->
         conn

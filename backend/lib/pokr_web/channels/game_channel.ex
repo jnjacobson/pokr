@@ -53,6 +53,19 @@ defmodule PokrWeb.GameChannel do
     {:noreply, socket}
   end
 
+  def handle_in("deck_changed", params, socket) do
+    deck = params["deck"]
+
+    case Pokr.Games.set_deck(socket.assigns[:game_id], deck) do
+      :ok ->
+        broadcast!(socket, "deck_changed", %{deck: deck})
+        {:noreply, socket}
+
+      {:error, reason} ->
+        {:reply, {:error, %{reason: reason}}, socket}
+    end
+  end
+
   def handle_in("cards_revealed", params, socket) do
     case Pokr.Games.set_are_cards_revealed(socket.assigns[:game_id], true) do
       :ok ->
